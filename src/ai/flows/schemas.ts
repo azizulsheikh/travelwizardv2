@@ -3,6 +3,22 @@
  */
 import {z} from 'genkit';
 
+export const FlightDetailsSchema = z.object({
+  airline: z.string().optional(),
+  flightNumber: z.string().optional(),
+  departure: z.string().optional(),
+  arrival: z.string().optional(),
+  estimatedCost: z.any().optional(),
+  bookingUrl: z.string().optional(),
+});
+
+export const HotelDetailsSchema = z.object({
+  hotelName: z.string().optional(),
+  estimatedCost: z.any().optional(),
+  bookingUrl: z.string().optional(),
+});
+
+
 export const GenerateInitialTripPlanOutputSchema = z.object({
   tripTitle: z.string().describe('The title of the trip.'),
   tripSummary: z.string().describe('A brief summary of the trip.'),
@@ -31,4 +47,10 @@ export const GenerateInitialTripPlanOutputSchema = z.object({
       ),
     })
   ),
+  flightDetails: FlightDetailsSchema.optional().describe('Details for the flight for this trip.'),
+  hotelDetails: HotelDetailsSchema.optional().describe('Details for the hotel for this trip.'),
+  originCityIata: z.string().optional().describe('The IATA code for the origin city (e.g., "NYC" for New York City).'),
+  destinationCityIata: z.string().optional().describe('The IATA code for the destination city (e.g., "PAR" for Paris).'),
+  departureDate: z.string().optional().describe('The departure date in YYYY-MM-DD format.'),
+  returnDate: z.string().optional().describe('The return date in YYYY-MM-DD format.'),
 });

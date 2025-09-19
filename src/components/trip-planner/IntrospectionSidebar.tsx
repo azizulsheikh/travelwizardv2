@@ -83,8 +83,7 @@ export default function IntrospectionSidebar({ isLoading, onRefine, itineraryExi
   
   // Show refinement form only if an itinerary exists and we are not loading.
   if (itineraryExists) {
-    // The refinement functionality is temporarily disabled.
-    // return <RefinementForm onRefine={onRefine} isLoading={isLoading} />;
+    return <RefinementForm onRefine={onRefine} isLoading={isLoading} />;
   }
 
   // If there's no itinerary and we are not loading (e.g., error state), show nothing or a placeholder.
