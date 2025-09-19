@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 export default function Header() {
   return (
-    <header className="bg-animated-gradient text-primary-foreground shadow-sm sticky top-0 z-20">
+    <header className="bg-animated-gradient text-primary-foreground shadow-sm sticky top-0 z-20 rounded-b-2xl">
       <nav className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-2xl font-bold group">
