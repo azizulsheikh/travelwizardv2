@@ -9,7 +9,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-foreground">
             <Paperclip className="text-primary" />
-            <span className="font-headline">TripWeaver AI</span>
+            <span className="font-headline">TripWizard AI</span>
           </Link>
           <div>
             <Button variant="outline" asChild className="rounded-full font-semibold">
