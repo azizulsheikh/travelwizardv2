@@ -1,7 +1,6 @@
 import type { Activity } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import ActivityIcon from "./ActivityIcon";
-import Image from "next/image";
 import { DollarSign, Hotel } from "lucide-react";
 
 function LodgingCard({ activity }: { activity: Activity }) {
@@ -24,10 +23,6 @@ function LodgingCard({ activity }: { activity: Activity }) {
 
 
 export default function ActivityCard({ activity }: { activity: Activity }) {
-  const imageUrl = activity.imageQuery 
-    ? `https://source.unsplash.com/400x200/?${encodeURIComponent(activity.imageQuery)}`
-    : `https://picsum.photos/seed/${activity.title.replace(/\s/g, '')}/400/200`;
-
   return (
     <Card className="overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300">
       <CardContent className="p-4 flex items-start gap-x-4">
@@ -41,17 +36,6 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
             <p className="text-sm text-muted-foreground mt-1">{activity.description}</p>
           )}
           <LodgingCard activity={activity} />
-          {activity.imageQuery && (
-             <div className="mt-3 rounded-lg overflow-hidden relative w-full h-40">
-                <Image 
-                    src={imageUrl}
-                    alt={activity.title}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    data-ai-hint={activity.imageQuery}
-                />
-             </div>
-          )}
         </div>
       </CardContent>
     </Card>
