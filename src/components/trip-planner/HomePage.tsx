@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { Itinerary } from '@/lib/types';
-import { handleGeneratePlan } from '@/app/actions';
+import { handleGeneratePlan, handleRefineItinerary } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import HeroSection from './HeroSection';
 import ResultsView from './ResultsView';
@@ -11,6 +11,7 @@ import Image from 'next/image';
 export default function HomePage() {
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefining, setIsRefining] = useState(false);
   const { toast } = useToast();
 
   const handleInitialSubmit = async (prompt: string) => {
@@ -42,6 +43,24 @@ export default function HomePage() {
     }
   };
 
+  const handleRefine = async (refinementPrompt: string) => {
+    if (!itinerary) return;
+
+    setIsRefining(true);
+    const { plan, error } = await handleRefineItinerary(itinerary, refinementPrompt);
+    setIsRefining(false);
+    
+    if (error || !plan) {
+      toast({
+        title: "Error Refining Plan",
+        description: error || "An unknown error occurred.",
+        variant: "destructive",
+      });
+    } else {
+      setItinerary(plan);
+    }
+  };
+
   const showResults = isLoading || itinerary;
 
   return (
@@ -61,12 +80,8 @@ export default function HomePage() {
         {showResults && (
           <ResultsView 
             itinerary={itinerary}
-            isLoading={isLoading}
-            onRefine={async (followUp: string) => {
-              // This is a placeholder for now, as the new approach doesn't require a separate refinement step.
-              // In the future, this could be used to regenerate the plan with new instructions.
-              toast({ title: 'Refinement', description: 'This feature will be coming soon!'});
-            }}
+            isLoading={isLoading || isRefining}
+            onRefine={handleRefine}
           />
         )}
       </div>
