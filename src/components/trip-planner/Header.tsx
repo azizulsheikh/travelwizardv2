@@ -8,13 +8,15 @@ export default function Header() {
       <nav className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-2xl font-bold group">
-            <Wand2 className="group-hover:animate-pulse" />
-            <span className="font-headline transition-transform duration-300 group-hover:scale-105 text-animated-gradient">TripWizard AI</span>
+            <span className="font-headline transition-transform duration-300 group-hover:scale-105 text-animated-gradient flex items-center gap-2">
+              <Wand2 className="group-hover:animate-pulse" />
+              TripWizard AI
+            </span>
           </Link>
           <div>
             <Button variant="outline" asChild className="rounded-full font-semibold text-foreground">
               <Link href="/">
-                <Home />
+                <Home className="mr-2" />
                 Home
               </Link>
             </Button>
