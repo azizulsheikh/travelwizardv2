@@ -38,7 +38,7 @@ function LoadingState() {
   }, []);
 
   return (
-    <Card>
+    <Card className="bg-white/80 dark:bg-black/50 backdrop-blur-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-3">
           <Loader2 className="h-5 w-5 animate-spin" />
