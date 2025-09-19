@@ -72,7 +72,7 @@ const GenerateInitialTripPlanOutputSchema = z.object({
           title: z.string().describe('The title of the activity.'),
           startTime: z.string().describe('The start time of the activity.'),
           endTime: z.string().describe('The end time of the activity.'),
-          description: z.string().describe('A detailed description of the activity.'),
+          description: z.string().optional().describe('A detailed description of the activity.'),
           type: z
             .string()
             .describe(
@@ -115,67 +115,13 @@ const prompt = ai.definePrompt({
 
 User Request: {{{tripDescription}}}
 
-First, determine the origin and destination airports and cities from the user's request, as well as travel dates. You must provide the IATA codes. Use the searchFlights tool to find a suitable flight. If no flights are found, respond with an error.
+Your primary goal is to generate a valid JSON object that conforms to the specified output schema. Do not respond with an error if you cannot find flights or hotels. Instead, generate a creative itinerary and use placeholder data for flight and hotel details.
 
-Next, if the itinerary requires lodging, use the searchHotels tool to find a hotel in the destination city. You must select one hotel and include its real name and estimated cost in the plan.
-
-Then, include the real flight details (including the bookingUrl), hotel details, destinations, activities, and estimated costs in the plan. Return the itinerary as a JSON object.
-
-Ensure the JSON object adheres to the following schema:
-{
-  "type": "OBJECT",
-  "properties": {
-    "tripTitle": { "type": "STRING" },
-    "tripSummary": { "type": "STRING" },
-    "flightDetails": {
-      "type": "OBJECT",
-      "properties": {
-        "airline": { "type": "STRING" },
-        "flightNumber": { "type": "STRING" },
-        "departure": { "type": "STRING" },
-        "arrival": { "type": "STRING" },
-        "estimatedCost": { "type": "STRING" },
-        "bookingUrl": { "type": "STRING", "format": "uri" }
-      },
-      "required": ["airline", "flightNumber", "departure", "arrival", "estimatedCost", "bookingUrl"]
-    },
-    "days": {
-      "type": "ARRAY",
-      "items": {
-        "type": "OBJECT",
-        "properties": {
-          "day": { "type": "NUMBER" },
-          "theme": { "type": "STRING" },
-          "activities": {
-            "type": "ARRAY",
-            "items": {
-              "type": "OBJECT",
-              "properties": {
-                "title": { "type": "STRING" },
-                "startTime": { "type": "STRING" },
-                "endTime": { "type": "STRING" },
-                "description": { "type": "STRING" },
-                "type": { "type": "STRING", "enum": ["transfer", "food", "activity", "lodging", "free-time"] },
-                "imageQuery": { "type": "STRING" },
-                "lodgingDetails": {
-                  "type": "OBJECT",
-                  "properties": {
-                    "hotelName": { "type": "STRING" },
-                    "estimatedCost": { "type": "STRING" }
-                  },
-                  "required": ["hotelName", "estimatedCost"]
-                }
-              },
-              "required": ["title", "startTime", "endTime", "type"]
-            }
-          }
-        },
-        "required": ["day", "theme", "activities"]
-      }
-    }
-  },
-  "required": ["tripTitle", "tripSummary", "days", "flightDetails"]
-}
+1.  **Extract Details**: Determine the origin, destination, travel dates, and number of adults from the user's request. You must provide IATA codes for airports and cities.
+2.  **Search Flights**: Use the \`searchFlights\` tool to find a suitable flight. If the tool returns an error or no flights are found, you MUST create placeholder flight data.
+3.  **Search Hotels**: If the itinerary requires lodging, use the \`searchHotels\` tool to find a hotel. You must select one hotel and include its name and cost. If the tool returns an error or no hotels are found, you MUST create placeholder lodging data.
+4.  **Construct Itinerary**: Build the full itinerary, including the flight details (real or placeholder), hotel details (real or placeholder), destinations, and activities.
+5.  **Output JSON**: Ensure the entire response is a single, valid JSON object that adheres to the output schema.
 `,
 });
 

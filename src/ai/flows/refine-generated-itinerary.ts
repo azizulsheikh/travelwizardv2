@@ -114,7 +114,7 @@ Generate a new, updated itinerary in JSON format that incorporates the user's fe
                                   "required": ["hotelName", "estimatedCost"]
                               }
                           },
-                          "required": ["title", "startTime", "endTime", "type"]
+                          "required": ["title", "startTime", "endTime", "type", "description"]
                       }
                   }
               },

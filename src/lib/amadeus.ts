@@ -29,25 +29,28 @@ export async function searchFlights(search: {
   try {
     const response = await amadeusClient.shopping.flightOffersSearch.get(search);
 
-    // We only need a brief summary of the flight, not the full data.
-    // Let's find the best flight and return a summary of that.
     if (response.data && response.data.length > 0) {
       const flight = response.data[0];
-      const simplifiedItinerary = flight.itineraries.map(itinerary => ({
-        duration: itinerary.duration,
-        segments: itinerary.segments.map(segment => ({
-          departure: `${segment.departure.iataCode} at ${segment.departure.at}`,
-          arrival: `${segment.arrival.iataCode} at ${segment.arrival.at}`,
-          carrier: segment.carrierCode,
-        })),
-      }));
+      const dictionaries = response.result.dictionaries;
 
+      const firstItinerary = flight.itineraries[0];
+      const firstSegment = firstItinerary.segments[0];
+      
+      const airline = dictionaries.carriers[firstSegment.carrierCode];
+      const flightNumber = `${firstSegment.carrierCode} ${firstSegment.number}`;
+      
+      const departure = `${firstSegment.departure.iataCode} at ${firstSegment.departure.at}`;
+      const arrival = `${firstItinerary.segments[firstItinerary.segments.length - 1].arrival.iataCode} at ${firstItinerary.segments[firstItinerary.segments.length - 1].arrival.at}`;
+      
       const googleFlightsUrl = new URL('https://www.google.com/travel/flights');
       googleFlightsUrl.searchParams.set('q', `Flights from ${search.originLocationCode} to ${search.destinationLocationCode} on ${search.departureDate}`);
 
       return {
-        price: flight.price.total,
-        itineraries: simplifiedItinerary,
+        airline: airline,
+        flightNumber: flightNumber,
+        departure: departure,
+        arrival: arrival,
+        estimatedCost: flight.price.total,
         bookingUrl: googleFlightsUrl.toString(),
       };
     }
