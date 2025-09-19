@@ -1,47 +1,32 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Textarea } from '../ui/textarea';
 import { Loader2, Send } from 'lucide-react';
-import Image from 'next/image';
+import { Skeleton } from '../ui/skeleton';
 
 interface IntrospectionSidebarProps {
   isLoading: boolean;
   onRefine: (followUp: string) => void;
+  itineraryExists: boolean;
 }
 
 function LoadingState() {
   return (
-    <Card className="bg-white/80 dark:bg-black/50 backdrop-blur-sm overflow-hidden relative">
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1551203302-1a41a63b65b6?q=80&w=800&auto=format&fit=crop"
-          alt="Ancient magical room"
-          fill
-          style={{ objectFit: 'cover' }}
-          className="opacity-30"
-        />
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
-      </div>
-      <div className="relative z-10">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3 text-white">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            Crafting Your Adventure...
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center">
-          <Image
-            src="/wizard-loader.gif"
-            alt="Wizard writing a scroll"
-            width={200}
-            height={200}
-            unoptimized={true} 
-          />
-        </CardContent>
-      </div>
+    <Card className="bg-white/80 dark:bg-black/50 backdrop-blur-sm">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-3">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          Thinking...
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-4 w-1/2" />
+        <Skeleton className="h-4 w-2/3" />
+      </CardContent>
     </Card>
   );
 }
@@ -51,6 +36,7 @@ function RefinementForm({ onRefine, isLoading }: { onRefine: (followUp: string) 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!followUp.trim()) return;
     onRefine(followUp);
     setFollowUp('');
   }
@@ -89,12 +75,17 @@ function RefinementForm({ onRefine, isLoading }: { onRefine: (followUp: string) 
   );
 }
 
-export default function IntrospectionSidebar({ isLoading, onRefine }: IntrospectionSidebarProps) {
-  // Show loading state for both initial generation and refinement
+export default function IntrospectionSidebar({ isLoading, onRefine, itineraryExists }: IntrospectionSidebarProps) {
+  // Show a simpler loading state in the sidebar if we are generating the initial plan OR refining.
   if (isLoading) {
     return <LoadingState />;
   }
   
-  // Show refinement form when not loading
-  return <RefinementForm onRefine={onRefine} isLoading={isLoading} />;
+  // Show refinement form only if an itinerary exists and we are not loading.
+  if (itineraryExists) {
+    return <RefinementForm onRefine={onRefine} isLoading={isLoading} />;
+  }
+
+  // If there's no itinerary and we are not loading (e.g., error state), show nothing or a placeholder.
+  return null;
 }

@@ -3,8 +3,8 @@
 import type { Itinerary } from '@/lib/types';
 import IntrospectionSidebar from './IntrospectionSidebar';
 import ItineraryDisplay from './ItineraryDisplay';
-import ItinerarySkeleton from './ItinerarySkeleton';
 import Image from 'next/image';
+import LoadingDisplay from './LoadingDisplay';
 
 interface ResultsViewProps {
   itinerary: Itinerary | null;
@@ -19,7 +19,7 @@ export default function ResultsView({ itinerary, isLoading, onRefine }: ResultsV
     <div className="container mx-auto p-4 md:p-8">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/3 lg:w-1/4">
-          <IntrospectionSidebar isLoading={isLoading} onRefine={onRefine} />
+          <IntrospectionSidebar isLoading={isLoading} onRefine={onRefine} itineraryExists={!!itinerary} />
         </div>
         <div className="w-full md:w-2/3 lg:w-3/4 relative p-6 rounded-2xl shadow-lg">
           {showImage && (
@@ -37,7 +37,7 @@ export default function ResultsView({ itinerary, isLoading, onRefine }: ResultsV
           )}
           <div className="relative">
             {isLoading && !itinerary ? (
-              <ItinerarySkeleton isInitial={true} />
+              <LoadingDisplay />
             ) : itinerary ? (
               <ItineraryDisplay itinerary={itinerary} isLoading={isLoading} />
             ) : null}
