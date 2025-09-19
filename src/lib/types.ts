@@ -39,6 +39,8 @@ export interface Itinerary {
     tripSummary: string;
     originCity?: string;
     destinationCity?: string;
+    originCityIata?: string;
+    destinationCityIata?: string;
     departureDate?: string;
     returnDate?: string;
     flightDetails?: FlightDetails;

@@ -8,6 +8,8 @@ export const GenerateInitialTripPlanOutputSchema = z.object({
   tripSummary: z.string().describe('A brief summary of the trip.'),
   originCity: z.string().optional().describe('The origin city for the trip.'),
   destinationCity: z.string().optional().describe('The destination city for the trip.'),
+  originCityIata: z.string().optional().describe("The 3-letter IATA code for the origin city."),
+  destinationCityIata: z.string().optional().describe("The 3-letter IATA code for the destination city."),
   departureDate: z.string().optional().describe('The departure date in YYYY-MM-DD format.'),
   returnDate: z.string().optional().describe('The return date in YYYY-MM-DD format.'),
   flightDetails: z
