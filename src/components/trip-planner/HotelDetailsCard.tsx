@@ -16,9 +16,10 @@ export default function HotelDetailsCard({ hotelDetails }: HotelDetailsCardProps
   if (!hotelDetails) return null;
 
   const handleAnimation = () => {
+    if (!hotelDetails.bookingUrl) return;
     setIsAnimating(true);
     setTimeout(() => {
-      window.open(hotelDetails.bookingUrl || '#', '_blank', 'noopener,noreferrer');
+      window.open(hotelDetails.bookingUrl, '_blank', 'noopener,noreferrer');
       setIsAnimating(false);
     }, 750); // Match animation duration
   };
@@ -43,12 +44,14 @@ export default function HotelDetailsCard({ hotelDetails }: HotelDetailsCardProps
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-center">
-        <Button onClick={handleAnimation} disabled={isAnimating}>
-          <Building className={`mr-2 ${isAnimating ? 'fly-away' : ''}`} />
-          View Hotel
-        </Button>
-      </CardFooter>
+      {hotelDetails.bookingUrl && (
+        <CardFooter className="flex justify-center">
+            <Button onClick={handleAnimation} disabled={isAnimating || !hotelDetails.bookingUrl}>
+                <Building className={`mr-2 ${isAnimating ? 'fly-away' : ''}`} />
+                View Hotel
+            </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 }

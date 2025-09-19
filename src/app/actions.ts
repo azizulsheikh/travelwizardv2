@@ -28,12 +28,20 @@ export async function handleRefinePlan(itinerary: Itinerary, followUp: string): 
     
     let plan: Itinerary;
     if (typeof refinedPlanResult === 'string') {
-      plan = JSON.parse(refinedPlanResult);
+      plan = JSON.parse(refinedPlanResult) as Itinerary;
     } else {
       plan = refinedPlanResult as Itinerary;
     }
 
-    return { plan, error: null };
+    // Merge the new details with the old itinerary
+    const updatedItinerary: Itinerary = {
+      ...itinerary,
+      ...plan,
+      flightDetails: plan.flightDetails || itinerary.flightDetails,
+      hotelDetails: plan.hotelDetails || itinerary.hotelDetails,
+    };
+
+    return { plan: updatedItinerary, error: null };
   } catch (e) {
     console.error(e);
     return { plan: null, error: 'Failed to refine trip plan. Please try again.' };
