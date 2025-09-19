@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Textarea } from '../ui/textarea';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Send } from 'lucide-react';
+import { Input } from '../ui/input';
 
 interface IntrospectionSidebarProps {
   isLoading: boolean;
@@ -68,24 +69,30 @@ function RefinementForm({ onRefine, isLoading }: { onRefine: (followUp: string) 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Trip Updated!</CardTitle>
+        <CardTitle>Refine Your Trip</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-muted-foreground mb-6 text-sm">
-          Your itinerary has been generated. You can ask for changes or refinements below.
+        <p className="text-muted-foreground mb-4 text-sm">
+          Your itinerary is ready. Not quite right? Tell me what you'd like to change.
         </p>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="relative">
           <Textarea
             id="followup-prompt"
-            placeholder="e.g., 'Add more hiking trails' or 'Find cheaper restaurants'"
-            rows={3}
+            placeholder="e.g., 'Find cheaper restaurants'"
+            rows={2}
             value={followUp}
             onChange={(e) => setFollowUp(e.target.value)}
             disabled={isLoading}
+            className="pr-12"
           />
-          <Button type="submit" className="w-full mt-3" disabled={isLoading}>
-            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            Refine Trip
+          <Button 
+            type="submit" 
+            size="icon"
+            className="absolute bottom-2 right-2 h-8 w-8" 
+            disabled={isLoading || !followUp.trim()}
+          >
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            <span className="sr-only">Send message</span>
           </Button>
         </form>
       </CardContent>
@@ -95,10 +102,10 @@ function RefinementForm({ onRefine, isLoading }: { onRefine: (followUp: string) 
 
 export default function IntrospectionSidebar({ isLoading, onRefine }: IntrospectionSidebarProps) {
   // Always show the loading state if the app is loading, even during refinement
-  if (isLoading) {
+  if (isLoading && !onRefine) { // A bit of a hack to distinguish initial load
     return <LoadingState />;
   }
   
-  // Only show the refinement form when not loading
+  // Show refinement form with loading state for follow-ups
   return <RefinementForm onRefine={onRefine} isLoading={isLoading} />;
 }
