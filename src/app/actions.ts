@@ -24,8 +24,15 @@ export async function handleRefinePlan(itinerary: Itinerary, followUp: string): 
   }
   
   try {
-    const refinedPlanString = await refineGeneratedItinerary({ itinerary: JSON.stringify(itinerary), followUp });
-    const plan = JSON.parse(refinedPlanString);
+    const refinedPlanResult = await refineGeneratedItinerary({ itinerary: JSON.stringify(itinerary), followUp });
+    
+    let plan: Itinerary;
+    if (typeof refinedPlanResult === 'string') {
+      plan = JSON.parse(refinedPlanResult);
+    } else {
+      plan = refinedPlanResult as Itinerary;
+    }
+
     return { plan, error: null };
   } catch (e) {
     console.error(e);

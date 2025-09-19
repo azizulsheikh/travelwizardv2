@@ -11,6 +11,7 @@
 import {ai} from '@/ai/genkit';
 import { flightSearchTool, hotelSearchTool } from '@/ai/tools/amadeus';
 import {z} from 'genkit';
+import { GenerateInitialTripPlanOutputSchema } from './schemas';
 
 const RefineGeneratedItineraryInputSchema = z.object({
   itinerary: z.string().describe('The previous travel itinerary in JSON format.'),
@@ -18,8 +19,7 @@ const RefineGeneratedItineraryInputSchema = z.object({
 });
 export type RefineGeneratedItineraryInput = z.infer<typeof RefineGeneratedItineraryInputSchema>;
 
-const RefineGeneratedItineraryOutputSchema = z.string().describe('The refined travel itinerary in JSON format.');
-export type RefineGeneratedItineraryOutput = z.infer<typeof RefineGeneratedItineraryOutputSchema>;
+export type RefineGeneratedItineraryOutput = z.infer<typeof GenerateInitialTripPlanOutputSchema>;
 
 export async function refineGeneratedItinerary(input: RefineGeneratedItineraryInput): Promise<RefineGeneratedItineraryOutput> {
   return refineGeneratedItineraryFlow(input);
@@ -28,7 +28,7 @@ export async function refineGeneratedItinerary(input: RefineGeneratedItineraryIn
 const refineItineraryPrompt = ai.definePrompt({
   name: 'refineItineraryPrompt',
   input: {schema: RefineGeneratedItineraryInputSchema},
-  output: {schema: RefineGeneratedItineraryOutputSchema},
+  output: {schema: GenerateInitialTripPlanOutputSchema},
   tools: [flightSearchTool, hotelSearchTool],
   prompt: `You are an expert travel agent. A user has provided a follow-up request to refine their travel itinerary. Your job is to modify the previous itinerary based on the new instructions.
 
@@ -40,70 +40,7 @@ Previous Itinerary:
 
 Follow-up Request: {{{followUp}}}
 
-Generate a new, updated itinerary in JSON format that incorporates the user's feedback. The JSON object must adhere to the following schema:
-
-{
-  "type": "OBJECT",
-  "properties": {
-      "tripTitle": { "type": "STRING" },
-      "tripSummary": { "type": "STRING" },
-      "flightDetails": {
-          "type": "OBJECT",
-          "properties": {
-              "airline": { "type": "STRING" },
-              "flightNumber": { "type": "STRING" },
-              "departure": { "type": "STRING" },
-              "arrival": { "type": "STRING" },
-              "estimatedCost": { "type": "STRING" },
-              "bookingUrl": { "type": "STRING", "format": "uri" }
-          },
-           "required": ["airline", "flightNumber", "departure", "arrival", "estimatedCost", "bookingUrl"]
-      },
-      "hotelDetails": {
-        "type": "OBJECT",
-        "properties": {
-            "hotelName": { "type": "STRING" },
-            "estimatedCost": { "type": "STRING" },
-            "bookingUrl": { "type": "STRING", "format": "uri" }
-        }
-      },
-      "days": {
-          "type": "ARRAY",
-          "items": {
-              "type": "OBJECT",
-              "properties": {
-                  "day": { "type": "NUMBER" },
-                  "theme": { "type": "STRING" },
-                  "activities": {
-                      "type": "ARRAY",
-                      "items": {
-                          "type": "OBJECT",
-                          "properties": {
-                              "title": { "type": "STRING" },
-                              "startTime": { "type": "STRING" },
-                              "endTime": { "type": "STRING" },
-                              "description": { "type": "STRING" },
-                              "type": { "type": "STRING", "enum": ["transfer", "food", "activity", "lodging", "free-time"] },
-                              "imageQuery": { "type": "STRING" },
-                              "lodgingDetails": {
-                                  "type": "OBJECT",
-                                  "properties": {
-                                      "hotelName": { "type": "STRING" },
-                                      "estimatedCost": { "type": "STRING" }
-                                  },
-                                  "required": ["hotelName", "estimatedCost"]
-                              }
-                          },
-                          "required": ["title", "startTime", "endTime", "type", "description"]
-                      }
-                  }
-              },
-              "required": ["day", "theme", "activities"]
-          }
-      }
-  },
-  "required": ["tripTitle", "tripSummary", "days", "flightDetails"]
-}
+Generate a new, updated itinerary in JSON format that incorporates the user's feedback. The JSON object must adhere to the output schema.
 
 Ensure that the ENTIRE response is valid JSON. Do not include any markdown formatting or other text outside of the JSON structure.
 `,
@@ -113,7 +50,7 @@ const refineGeneratedItineraryFlow = ai.defineFlow(
   {
     name: 'refineGeneratedItineraryFlow',
     inputSchema: RefineGeneratedItineraryInputSchema,
-    outputSchema: RefineGeneratedItineraryOutputSchema,
+    outputSchema: GenerateInitialTripPlanOutputSchema,
   },
   async input => {
     const {output} = await refineItineraryPrompt(input);
