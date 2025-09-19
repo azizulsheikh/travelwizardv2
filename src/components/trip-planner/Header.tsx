@@ -9,7 +9,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-2xl font-bold group">
             <Wand2 className="text-primary-foreground group-hover:animate-pulse" />
-            <span className="font-headline transition-transform duration-300 group-hover:scale-105">TripWizard AI</span>
+            <span className="font-headline transition-transform duration-300 group-hover:scale-105 text-animated-gradient">TripWizard AI</span>
           </Link>
           <div>
             <Button variant="outline" asChild className="rounded-full font-semibold text-foreground">

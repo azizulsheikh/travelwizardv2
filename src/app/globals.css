@@ -13,6 +13,14 @@ body {
     animation: gradient 15s ease infinite;
   }
 
+  .text-animated-gradient {
+    background: linear-gradient(-45deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--primary)));
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient 15s ease infinite;
+  }
+
   @keyframes gradient {
     0% {
       background-position: 0% 50%;
