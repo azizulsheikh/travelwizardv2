@@ -29,6 +29,7 @@ export default function LoadingDisplay() {
             width={250}
             height={250}
             unoptimized={true}
+            className="rounded-lg"
           />
         </CardContent>
       </div>
