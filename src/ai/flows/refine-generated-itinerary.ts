@@ -35,8 +35,8 @@ Follow these instructions:
 
 1.  **Analyze the Request**: Read the user's follow-up request to understand what needs to be changed or added. The request will most likely be to find flights and hotels.
 2.  **Use Tools**:
-    *   If the request involves flights, use the \`flightSearchTool\` with the correct parameters from the itinerary (origin, destination, dates).
-    *   If the request involves hotels, use the \`hotelSearchTool\` with the destination city's IATA code. The tool returns a list of hotels.
+    *   If the request involves flights, you **must** use the \`flightSearchTool\` with the correct parameters from the itinerary (origin, destination, dates).
+    *   If the request involves hotels, you **must** use the \`hotelSearchTool\` with the destination city's IATA code. The tool returns a list of hotels.
 3.  **Integrate Results**:
     *   Take the results from the tool calls and integrate them into the \`flightDetails\` and \`hotelDetails\` sections of the itinerary.
     *   When selecting a hotel, you **must pick the first one** from the search results list.

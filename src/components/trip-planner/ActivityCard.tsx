@@ -34,7 +34,9 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
           {activity.description && (
             <p className="text-sm text-muted-foreground mt-1">{activity.description}</p>
           )}
-          <LodgingCard activity={activity} />
+          {activity.type === 'lodging' && activity.lodgingDetails && (
+            <LodgingCard activity={activity} />
+          )}
         </div>
       </CardContent>
     </Card>
