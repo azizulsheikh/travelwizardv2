@@ -9,7 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {searchFlights} from '@/lib/amadeus';
+import {searchFlights, searchHotels} from '@/lib/amadeus';
 import {z} from 'genkit';
 
 const flightSearchTool = ai.defineTool(
@@ -26,6 +26,18 @@ const flightSearchTool = ai.defineTool(
     outputSchema: z.any(),
   },
   async (input) => searchFlights(input)
+);
+
+const hotelSearchTool = ai.defineTool(
+  {
+    name: 'searchHotels',
+    description: 'Search for hotels in a specific city.',
+    inputSchema: z.object({
+      cityCode: z.string().describe('The IATA code for the city (e.g., "PAR" for Paris).'),
+    }),
+    outputSchema: z.any(),
+  },
+  async (input) => searchHotels(input)
 );
 
 
@@ -97,14 +109,16 @@ const prompt = ai.definePrompt({
   name: 'generateInitialTripPlanPrompt',
   input: {schema: GenerateInitialTripPlanInputSchema},
   output: {schema: GenerateInitialTripPlanOutputSchema},
-  tools: [flightSearchTool],
+  tools: [flightSearchTool, hotelSearchTool],
   prompt: `You are an expert travel agent. Create a detailed travel itinerary based on the user's request.
 
 User Request: {{{tripDescription}}}
 
-First, determine the origin and destination airports from the user's request, as well as travel dates. Use the searchFlights tool to find a suitable flight. You must provide the IATA codes for the airports.
+First, determine the origin and destination airports and cities from the user's request, as well as travel dates. You must provide the IATA codes. Use the searchFlights tool to find a suitable flight.
 
-Then, include the real flight details, destinations, activities, and estimated costs in the plan. Return the itinerary as a JSON object.
+Next, if the itinerary requires lodging, use the searchHotels tool to find a hotel in the destination city. You must select one hotel and include its real name and estimated cost in the plan.
+
+Then, include the real flight details, hotel details, destinations, activities, and estimated costs in the plan. Return the itinerary as a JSON object.
 
 Ensure the JSON object adheres to the following schema:
 {
@@ -146,7 +160,8 @@ Ensure the JSON object adheres to the following schema:
                   "properties": {
                     "hotelName": { "type": "STRING" },
                     "estimatedCost": { "type": "STRING" }
-                  }
+                  },
+                  "required": ["hotelName", "estimatedCost"]
                 }
               },
               "required": ["title", "startTime", "endTime", "type"]

@@ -53,3 +53,22 @@ export async function searchFlights(search: {
     return { error: 'Failed to fetch flights.' };
   }
 }
+
+export async function searchHotels(search: { cityCode: string }) {
+  const amadeusClient = getAmadeusClient();
+  try {
+    const response = await amadeusClient.shopping.hotelOffers.getByCity.get(search);
+    if (response.data && response.data.length > 0) {
+      // Return a simplified list of up to 5 hotels
+      return response.data.slice(0, 5).map((offer: any) => ({
+        hotelName: offer.hotel.name,
+        // Assuming the first offer has a price
+        estimatedCost: offer.offers[0].price.total,
+      }));
+    }
+    return { error: 'No hotels found' };
+  } catch (error) {
+    console.error(error);
+    return { error: 'Failed to fetch hotels.' };
+  }
+}

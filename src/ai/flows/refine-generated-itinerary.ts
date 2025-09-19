@@ -9,7 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {searchFlights} from '@/lib/amadeus';
+import {searchFlights, searchHotels} from '@/lib/amadeus';
 import {z} from 'genkit';
 
 const flightSearchTool = ai.defineTool(
@@ -26,6 +26,18 @@ const flightSearchTool = ai.defineTool(
     outputSchema: z.any(),
   },
   async (input) => searchFlights(input)
+);
+
+const hotelSearchTool = ai.defineTool(
+  {
+    name: 'searchHotels',
+    description: 'Search for hotels in a specific city.',
+    inputSchema: z.object({
+      cityCode: z.string().describe('The IATA code for the city (e.g., "PAR" for Paris).'),
+    }),
+    outputSchema: z.any(),
+  },
+  async (input) => searchHotels(input)
 );
 
 const RefineGeneratedItineraryInputSchema = z.object({
@@ -45,10 +57,11 @@ const refineItineraryPrompt = ai.definePrompt({
   name: 'refineItineraryPrompt',
   input: {schema: RefineGeneratedItineraryInputSchema},
   output: {schema: RefineGeneratedItineraryOutputSchema},
-  tools: [flightSearchTool],
+  tools: [flightSearchTool, hotelSearchTool],
   prompt: `You are an expert travel agent. A user has provided a follow-up request to refine their travel itinerary. Your job is to modify the previous itinerary based on the new instructions.
 
-If the user asks for different flight information, use the searchFlights tool to find a suitable flight. You must provide the IATA codes for the airports.
+If the user asks for different flight information, use the searchFlights tool to find a suitable flight.
+If the user asks for different hotel information, use the searchHotels tool to find suitable lodging. You must provide the IATA codes for airports and cities.
 
 Previous Itinerary:
 {{{itinerary}}}
@@ -96,7 +109,8 @@ Generate a new, updated itinerary in JSON format that incorporates the user's fe
                                   "properties": {
                                       "hotelName": { "type": "STRING" },
                                       "estimatedCost": { "type": "STRING" }
-                                  }
+                                  },
+                                  "required": ["hotelName", "estimatedCost"]
                               }
                           },
                           "required": ["title", "startTime", "endTime", "type"]
