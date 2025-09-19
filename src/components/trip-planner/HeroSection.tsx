@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import Image from 'next/image';
 
 interface HeroSectionProps {
   onSubmit: (prompt: string) => void;
@@ -19,16 +18,6 @@ export default function HeroSection({ onSubmit }: HeroSectionProps) {
 
   return (
     <section className="relative text-white">
-      <div className="absolute inset-0">
-        <Image
-          src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop"
-          alt="Tropical beach destination"
-          fill
-          style={{ objectFit: 'cover' }}
-          priority
-        />
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-      </div>
       <div className="container mx-auto px-6 py-32 text-center relative z-10">
         <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-4 font-headline">
           Just imagine your trip.
