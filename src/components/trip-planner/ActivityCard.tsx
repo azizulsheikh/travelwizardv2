@@ -24,7 +24,9 @@ function LodgingCard({ activity }: { activity: Activity }) {
 
 
 export default function ActivityCard({ activity }: { activity: Activity }) {
-  const seed = activity.title.replace(/\s/g, '');
+  const imageUrl = activity.imageQuery 
+    ? `https://source.unsplash.com/400x200/?${encodeURIComponent(activity.imageQuery)}`
+    : `https://picsum.photos/seed/${activity.title.replace(/\s/g, '')}/400/200`;
 
   return (
     <Card className="overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300">
@@ -42,7 +44,7 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
           {activity.imageQuery && (
              <div className="mt-3 rounded-lg overflow-hidden relative w-full h-40">
                 <Image 
-                    src={`https://picsum.photos/seed/${seed}/400/200`}
+                    src={imageUrl}
                     alt={activity.title}
                     fill
                     style={{ objectFit: 'cover' }}
