@@ -24,7 +24,7 @@ function LodgingCard({ activity }: { activity: Activity }) {
 
 export default function ActivityCard({ activity }: { activity: Activity }) {
   return (
-    <Card className="overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300">
+    <Card className="overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 bg-white/80 dark:bg-black/50 backdrop-blur-sm">
       <CardContent className="p-4 flex items-start gap-x-4">
         <div className="bg-muted p-2 rounded-full mt-1">
           <ActivityIcon type={activity.type} className="w-6 h-6 text-muted-foreground" />

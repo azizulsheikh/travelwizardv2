@@ -13,15 +13,16 @@ interface ResultsViewProps {
 }
 
 export default function ResultsView({ itinerary, isLoading, onRefine }: ResultsViewProps) {
+  const showImage = isLoading || itinerary;
+
   return (
     <div className="container mx-auto p-4 md:p-8">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/3 lg:w-1/4">
           <IntrospectionSidebar isLoading={isLoading} onRefine={onRefine} />
         </div>
-        <div className="w-full md:w-2/3 lg:w-3/4 relative bg-animated-gradient p-6 rounded-2xl shadow-lg">
-          <div className="absolute inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-sm rounded-2xl"></div>
-          {isLoading && !itinerary && (
+        <div className="w-full md:w-2/3 lg:w-3/4 relative p-6 rounded-2xl shadow-lg">
+          {showImage && (
             <div className="absolute inset-0">
               <Image
                 src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?q=80&w=2070&auto=format&fit=crop"

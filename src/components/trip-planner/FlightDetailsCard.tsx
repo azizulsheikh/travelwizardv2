@@ -25,9 +25,9 @@ export default function FlightDetailsCard({ flightDetails }: FlightDetailsCardPr
     }
 
     return (
-        <Card className="border-l-4 border-primary hover:shadow-lg transition-shadow mb-8">
+        <Card className="border-l-4 border-primary hover:shadow-lg transition-shadow mb-8 bg-white/80 dark:bg-black/50 backdrop-blur-sm">
             <CardHeader>
-                <CardTitle className="flex items-center gap-3">
+                <CardTitle className="flex items-center gap-3 text-card-foreground">
                     <Plane className="text-primary" />
                     Flight Information
                 </CardTitle>
