@@ -7,9 +7,9 @@ export default function Header() {
     <header className="bg-card shadow-sm sticky top-0 z-20">
       <nav className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-foreground">
-            <Wand2 className="text-primary" />
-            <span className="font-headline">TripWizard AI</span>
+          <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-foreground group">
+            <Wand2 className="text-primary group-hover:animate-pulse" />
+            <span className="font-headline transition-transform duration-300 group-hover:scale-105">TripWizard AI</span>
           </Link>
           <div>
             <Button variant="outline" asChild className="rounded-full font-semibold">
