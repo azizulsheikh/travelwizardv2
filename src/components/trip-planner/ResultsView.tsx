@@ -1,25 +1,29 @@
 'use client';
 
-import type { Itinerary } from '@/lib/types';
+import type { Itinerary, FlightDetails, HotelDetails } from '@/lib/types';
 import IntrospectionSidebar from './IntrospectionSidebar';
 import ItineraryDisplay from './ItineraryDisplay';
 import Image from 'next/image';
 import LoadingDisplay from './LoadingDisplay';
+import FlightDetailsCard from './FlightDetailsCard';
+import HotelDetailsCard from './HotelDetailsCard';
 
 interface ResultsViewProps {
   itinerary: Itinerary | null;
+  flightDetails: FlightDetails | null;
+  hotelDetails: HotelDetails | null;
   isLoading: boolean;
   onRefine: (followUp: string) => void;
 }
 
-export default function ResultsView({ itinerary, isLoading, onRefine }: ResultsViewProps) {
+export default function ResultsView({ itinerary, flightDetails, hotelDetails, isLoading, onRefine }: ResultsViewProps) {
   const showImage = isLoading || itinerary;
 
   return (
     <div className="container mx-auto p-4 md:p-8">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/3 lg:w-1/4">
-          <IntrospectionSidebar isLoading={isLoading} onRefine={onRefine} itineraryExists={!!itinerary} />
+          <IntrospectionSidebar isLoading={isLoading && !itinerary} onRefine={onRefine} itineraryExists={!!itinerary} />
         </div>
         <div className="w-full md:w-2/3 lg:w-3/4 relative p-6 rounded-2xl shadow-lg">
           {showImage && (
@@ -39,7 +43,11 @@ export default function ResultsView({ itinerary, isLoading, onRefine }: ResultsV
             {isLoading && !itinerary ? (
               <LoadingDisplay />
             ) : itinerary ? (
-              <ItineraryDisplay itinerary={itinerary} isLoading={isLoading} />
+              <>
+                {flightDetails && <FlightDetailsCard flightDetails={flightDetails} />}
+                {hotelDetails && <HotelDetailsCard hotelDetails={hotelDetails} />}
+                <ItineraryDisplay itinerary={itinerary} isLoading={isLoading} />
+              </>
             ) : null}
           </div>
         </div>

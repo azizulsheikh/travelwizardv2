@@ -36,7 +36,7 @@ export async function handleGeneratePlan(tripDescription: string): Promise<{ pla
   }
 }
 
-export async function handleTravelSearch(itinerary: Itinerary): Promise<{ plan: Itinerary | null; error: string | null; }> {
+export async function handleTravelSearch(itinerary: Itinerary): Promise<{ flightDetails: FlightDetails | undefined; hotelDetails: HotelDetails | undefined; error: string | null; }> {
   try {
     let flightDetails: FlightDetails | undefined = undefined;
     let hotelDetails: HotelDetails | undefined = undefined;
@@ -74,15 +74,9 @@ export async function handleTravelSearch(itinerary: Itinerary): Promise<{ plan: 
         }
     }
 
-    const updatedItinerary: Itinerary = {
-        ...itinerary,
-        flightDetails: flightDetails || itinerary.flightDetails,
-        hotelDetails: hotelDetails || itinerary.hotelDetails,
-      };
-
-    return { plan: updatedItinerary, error: null };
+    return { flightDetails, hotelDetails, error: null };
   } catch (e) {
     console.error(e);
-    return { plan: null, error: 'Failed to find flights or hotels. Please try again.' };
+    return { flightDetails: undefined, hotelDetails: undefined, error: 'Failed to find flights or hotels. Please try again.' };
   }
 }

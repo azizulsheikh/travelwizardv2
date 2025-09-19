@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Itinerary } from '@/lib/types';
+import type { Itinerary, FlightDetails, HotelDetails } from '@/lib/types';
 import { handleGeneratePlan, handleTravelSearch } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import HeroSection from './HeroSection';
@@ -10,6 +10,8 @@ import Image from 'next/image';
 
 export default function HomePage() {
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
+  const [flightDetails, setFlightDetails] = useState<FlightDetails | null>(null);
+  const [hotelDetails, setHotelDetails] = useState<HotelDetails | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefining, setIsRefining] = useState(false);
   const { toast } = useToast();
@@ -26,6 +28,8 @@ export default function HomePage() {
     
     setIsLoading(true);
     setItinerary(null);
+    setFlightDetails(null);
+    setHotelDetails(null);
     
     const { plan, error } = await handleGeneratePlan(prompt);
     
@@ -42,18 +46,17 @@ export default function HomePage() {
       setItinerary(plan);
       // Now, refine the plan to add flight and hotel details in the background
       setIsRefining(true);
-      const { plan: refinedPlan, error: refinementError } = await handleTravelSearch(plan);
+      const { flightDetails: newFlightDetails, hotelDetails: newHotelDetails, error: refinementError } = await handleTravelSearch(plan);
       setIsRefining(false);
 
-      if (refinementError || !refinedPlan) {
+      if (refinementError) {
         toast({
           title: "Could not fetch travel details",
           description: "We couldn't find real-time flight or hotel data, but the itinerary is ready!",
         });
-        // Keep the original plan if refinement fails
-        setItinerary(plan);
       } else {
-        setItinerary(refinedPlan);
+        if(newFlightDetails) setFlightDetails(newFlightDetails);
+        if(newHotelDetails) setHotelDetails(newHotelDetails);
       }
     }
   };
@@ -86,6 +89,8 @@ export default function HomePage() {
         {showResults && (
           <ResultsView 
             itinerary={itinerary}
+            flightDetails={flightDetails}
+            hotelDetails={hotelDetails}
             isLoading={isLoading || isRefining}
             onRefine={handleRefinementSubmit}
           />
