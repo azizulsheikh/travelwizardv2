@@ -14,25 +14,34 @@ interface IntrospectionSidebarProps {
 
 function LoadingState() {
   return (
-    <Card className="bg-white/80 dark:bg-black/50 backdrop-blur-sm">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-3">
-          <Loader2 className="h-5 w-5 animate-spin" />
-          Crafting Your Adventure...
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col items-center justify-center">
+    <Card className="bg-white/80 dark:bg-black/50 backdrop-blur-sm overflow-hidden relative">
+      <div className="absolute inset-0 z-0">
         <Image
-          src="/wizard-loader.gif"
-          alt="Wizard writing a scroll"
-          width={200}
-          height={200}
-          unoptimized={true} 
+          src="https://images.unsplash.com/photo-1551203302-1a41a63b65b6?q=80&w=800&auto=format&fit=crop"
+          alt="Ancient magical room"
+          fill
+          style={{ objectFit: 'cover' }}
+          className="opacity-30"
         />
-        <p className="mt-4 text-sm text-muted-foreground text-center">
-          Please upload your GIF named 'wizard-loader.gif' to the 'public' folder.
-        </p>
-      </CardContent>
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+      </div>
+      <div className="relative z-10">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-3 text-white">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            Crafting Your Adventure...
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center">
+          <Image
+            src="/wizard-loader.gif"
+            alt="Wizard writing a scroll"
+            width={200}
+            height={200}
+            unoptimized={true} 
+          />
+        </CardContent>
+      </div>
     </Card>
   );
 }
