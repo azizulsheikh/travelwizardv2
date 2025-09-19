@@ -15,6 +15,7 @@ export const GenerateInitialTripPlanOutputSchema = z.object({
       estimatedCost: z.string().describe('The estimated cost of the flight.'),
       bookingUrl: z.string().url().describe('The URL to book the flight.'),
     })
+    .optional()
     .describe('Details about the recommended flight.'),
   hotelDetails: z
     .object({

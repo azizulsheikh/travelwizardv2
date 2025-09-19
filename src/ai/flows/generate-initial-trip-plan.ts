@@ -9,7 +9,6 @@
  */
 
 import {ai} from '@/ai/genkit';
-import { flightSearchTool, hotelSearchTool } from '@/ai/tools/amadeus';
 import {z} from 'genkit';
 import { GenerateInitialTripPlanOutputSchema } from './schemas';
 
@@ -36,18 +35,16 @@ const prompt = ai.definePrompt({
   name: 'generateInitialTripPlanPrompt',
   input: {schema: GenerateInitialTripPlanInputSchema},
   output: {schema: GenerateInitialTripPlanOutputSchema},
-  tools: [flightSearchTool, hotelSearchTool],
   prompt: `You are an expert travel agent. Create a detailed travel itinerary based on the user's request.
 
 User Request: {{{tripDescription}}}
 
-Your primary goal is to generate a valid JSON object that conforms to the specified output schema. Do not respond with an error if you cannot find flights or hotels. Instead, generate a creative itinerary and use placeholder data for flight and hotel details.
+Your primary goal is to generate a creative, engaging, and plausible travel itinerary. Do not worry about booking flights or hotels at this stage. Focus on crafting a compelling trip plan.
 
-1.  **Extract Details**: Determine the origin, destination, travel dates, and number of adults from the user's request. You must provide IATA codes for airports and cities.
-2.  **Search Flights**: Use the \`searchFlights\` tool to find a suitable flight. If the tool returns an error or no flights are found, you MUST create placeholder flight data.
-3.  **Search Hotels**: If the itinerary requires lodging, use the \`searchHotels\` tool to find a hotel. You must select one hotel and include its name, cost, and a booking URL in the top-level 'hotelDetails' field. If the tool returns an error or no hotels are found, you MUST create placeholder lodging data.
-4.  **Construct Itinerary**: Build the full itinerary, including the flight details (real or placeholder), hotel details (real or placeholder), destinations, and activities.
-5.  **Output JSON**: Ensure the entire response is a single, valid JSON object that adheres to the output schema.
+1.  **Extract Details**: Determine the origin, destination, and travel dates from the user's request to understand the context of the trip.
+2.  **Construct Itinerary**: Build a day-by-day itinerary with a theme for each day and a list of activities. For each activity, provide a title, start time, end time, a brief description, and a type (e.g., food, activity, free-time).
+3.  **Image Queries**: For each activity, generate a concise, descriptive search term for Unsplash (e.g., "Eiffel Tower at night") that can be used to fetch a relevant image.
+4.  **Output JSON**: Ensure the entire response is a single, valid JSON object that adheres to the output schema. Do not include placeholder flight or hotel details.
 `,
 });
 

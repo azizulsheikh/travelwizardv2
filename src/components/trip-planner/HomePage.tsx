@@ -37,6 +37,17 @@ export default function HomePage() {
       setItinerary(null);
     } else {
       setItinerary(plan);
+      // Now, refine the plan to add flight and hotel details in the background
+      const refinementPrompt = "Now, find the best flight and hotel for this trip.";
+      const { plan: refinedPlan, error: refinementError } = await handleRefinePlan(plan, refinementPrompt);
+      if (refinementError || !refinedPlan) {
+        toast({
+          title: "Could not fetch travel details",
+          description: "Don't worry, you can still ask for them in the chat.",
+        });
+      } else {
+        setItinerary(refinedPlan);
+      }
     }
     setIsLoading(false);
   };

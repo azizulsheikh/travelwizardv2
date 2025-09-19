@@ -32,8 +32,8 @@ const refineItineraryPrompt = ai.definePrompt({
   tools: [flightSearchTool, hotelSearchTool],
   prompt: `You are an expert travel agent. A user has provided a follow-up request to refine their travel itinerary. Your job is to modify the previous itinerary based on the new instructions.
 
-If the user asks for different flight information, use the searchFlights tool to find a suitable flight.
-If the user asks for different hotel information, use the searchHotels tool to find suitable lodging. You must provide the IATA codes for airports and cities.
+If the user asks for flight information, use the searchFlights tool to find a suitable flight.
+If the user asks for hotel information, use the searchHotels tool to find suitable lodging. You must provide the IATA codes for airports and cities.
 
 Previous Itinerary:
 {{{itinerary}}}
