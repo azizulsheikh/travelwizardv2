@@ -59,6 +59,14 @@ Generate a new, updated itinerary in JSON format that incorporates the user's fe
           },
            "required": ["airline", "flightNumber", "departure", "arrival", "estimatedCost", "bookingUrl"]
       },
+      "hotelDetails": {
+        "type": "OBJECT",
+        "properties": {
+            "hotelName": { "type": "STRING" },
+            "estimatedCost": { "type": "STRING" },
+            "bookingUrl": { "type": "STRING", "format": "uri" }
+        }
+      },
       "days": {
           "type": "ARRAY",
           "items": {

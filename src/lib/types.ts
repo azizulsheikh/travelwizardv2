@@ -28,9 +28,16 @@ export interface FlightDetails {
     bookingUrl: string;
 }
 
+export interface HotelDetails {
+    hotelName: string;
+    estimatedCost: string;
+    bookingUrl: string;
+}
+
 export interface Itinerary {
     tripTitle: string;
     tripSummary: string;
     flightDetails: FlightDetails;
+    hotelDetails?: HotelDetails;
     days: Day[];
 }

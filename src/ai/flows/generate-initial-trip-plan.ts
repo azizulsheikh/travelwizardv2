@@ -34,6 +34,12 @@ const GenerateInitialTripPlanOutputSchema = z.object({
       bookingUrl: z.string().url().describe('The URL to book the flight.'),
     })
     .describe('Details about the recommended flight.'),
+  hotelDetails: z
+    .object({
+        hotelName: z.string().describe('The name of the hotel.'),
+        estimatedCost: z.string().describe('The estimated cost per night.'),
+        bookingUrl: z.string().url().describe('A URL to book the hotel.'),
+    }).optional().describe('The recommended hotel for the trip.'),
   days: z.array(
     z.object({
       day: z.number().describe('The day number of the itinerary.'),
@@ -90,7 +96,7 @@ Your primary goal is to generate a valid JSON object that conforms to the specif
 
 1.  **Extract Details**: Determine the origin, destination, travel dates, and number of adults from the user's request. You must provide IATA codes for airports and cities.
 2.  **Search Flights**: Use the \`searchFlights\` tool to find a suitable flight. If the tool returns an error or no flights are found, you MUST create placeholder flight data.
-3.  **Search Hotels**: If the itinerary requires lodging, use the \`searchHotels\` tool to find a hotel. You must select one hotel and include its name and cost. If the tool returns an error or no hotels are found, you MUST create placeholder lodging data.
+3.  **Search Hotels**: If the itinerary requires lodging, use the \`searchHotels\` tool to find a hotel. You must select one hotel and include its name, cost, and a booking URL in the top-level 'hotelDetails' field. If the tool returns an error or no hotels are found, you MUST create placeholder lodging data.
 4.  **Construct Itinerary**: Build the full itinerary, including the flight details (real or placeholder), hotel details (real or placeholder), destinations, and activities.
 5.  **Output JSON**: Ensure the entire response is a single, valid JSON object that adheres to the output schema.
 `,
