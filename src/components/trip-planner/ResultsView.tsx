@@ -1,22 +1,18 @@
 'use client';
 
-import type { Itinerary, FlightDetails, HotelDetails } from '@/lib/types';
+import type { Itinerary } from '@/lib/types';
 import IntrospectionSidebar from './IntrospectionSidebar';
 import ItineraryDisplay from './ItineraryDisplay';
 import Image from 'next/image';
 import LoadingDisplay from './LoadingDisplay';
-import FlightDetailsCard from './FlightDetailsCard';
-import HotelDetailsCard from './HotelDetailsCard';
 
 interface ResultsViewProps {
   itinerary: Itinerary | null;
-  flightDetails: FlightDetails | null;
-  hotelDetails: HotelDetails | null;
   isLoading: boolean;
   onRefine: (followUp: string) => void;
 }
 
-export default function ResultsView({ itinerary, flightDetails, hotelDetails, isLoading, onRefine }: ResultsViewProps) {
+export default function ResultsView({ itinerary, isLoading, onRefine }: ResultsViewProps) {
   const showImage = isLoading || itinerary;
 
   return (
@@ -43,11 +39,7 @@ export default function ResultsView({ itinerary, flightDetails, hotelDetails, is
             {isLoading && !itinerary ? (
               <LoadingDisplay />
             ) : itinerary ? (
-              <>
-                {flightDetails && <FlightDetailsCard flightDetails={flightDetails} />}
-                {hotelDetails && <HotelDetailsCard hotelDetails={hotelDetails} />}
-                <ItineraryDisplay itinerary={itinerary} isLoading={isLoading} />
-              </>
+              <ItineraryDisplay itinerary={itinerary} isLoading={isLoading} />
             ) : null}
           </div>
         </div>

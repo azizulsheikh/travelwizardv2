@@ -2,6 +2,8 @@
 
 import type { Itinerary } from '@/lib/types';
 import ActivityCard from './ActivityCard';
+import FlightDetailsCard from './FlightDetailsCard';
+import HotelDetailsCard from './HotelDetailsCard';
 
 interface ItineraryDisplayProps {
     itinerary: Itinerary;
@@ -14,6 +16,9 @@ export default function ItineraryDisplay({ itinerary, isLoading }: ItineraryDisp
         <h1 className="text-4xl font-bold text-center mb-2 font-headline text-white">{itinerary.tripTitle}</h1>
         <p className="text-lg text-muted-foreground text-center mb-10 text-white/80">{itinerary.tripSummary}</p>
         
+        {itinerary.flightDetails && <FlightDetailsCard flightDetails={itinerary.flightDetails} />}
+        {itinerary.hotelDetails && <HotelDetailsCard hotelDetails={itinerary.hotelDetails} />}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {itinerary.days.map(day => (
                 <div key={day.day} className="flex flex-col gap-y-4">

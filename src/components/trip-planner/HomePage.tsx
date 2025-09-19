@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { Itinerary, FlightDetails, HotelDetails } from '@/lib/types';
-import { handleGeneratePlan, handleTravelSearch } from '@/app/actions';
+import { handleGeneratePlan, handleRefinePlan } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import HeroSection from './HeroSection';
 import ResultsView from './ResultsView';
@@ -10,8 +10,6 @@ import Image from 'next/image';
 
 export default function HomePage() {
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
-  const [flightDetails, setFlightDetails] = useState<FlightDetails | null>(null);
-  const [hotelDetails, setHotelDetails] = useState<HotelDetails | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefining, setIsRefining] = useState(false);
   const { toast } = useToast();
@@ -28,8 +26,6 @@ export default function HomePage() {
     
     setIsLoading(true);
     setItinerary(null);
-    setFlightDetails(null);
-    setHotelDetails(null);
     
     const { plan, error } = await handleGeneratePlan(prompt);
     
@@ -46,7 +42,7 @@ export default function HomePage() {
       setItinerary(plan);
       // Now, refine the plan to add flight and hotel details in the background
       setIsRefining(true);
-      const { flightDetails: newFlightDetails, hotelDetails: newHotelDetails, error: refinementError } = await handleTravelSearch(plan);
+      const { plan: refinedPlan, error: refinementError } = await handleRefinePlan(plan, "Find flights and hotels for this trip.");
       setIsRefining(false);
 
       if (refinementError) {
@@ -54,20 +50,28 @@ export default function HomePage() {
           title: "Could not fetch travel details",
           description: "We couldn't find real-time flight or hotel data, but the itinerary is ready!",
         });
-      } else {
-        if(newFlightDetails) setFlightDetails(newFlightDetails);
-        if(newHotelDetails) setHotelDetails(newHotelDetails);
+      } else if (refinedPlan) {
+        setItinerary(refinedPlan);
       }
     }
   };
 
   const handleRefinementSubmit = async (followUp: string) => {
-    // This function is now effectively disabled as we are not using the AI to refine.
-    // You could adapt this to handle other types of non-API refinements if needed.
-    toast({
-      title: "Coming Soon!",
-      description: "Manual refinement is not yet supported in this version.",
-    });
+    if (!itinerary) return;
+
+    setIsRefining(true);
+    const { plan: refinedPlan, error } = await handleRefinePlan(itinerary, followUp);
+    setIsRefining(false);
+
+    if (error || !refinedPlan) {
+      toast({
+        title: "Error Refining Plan",
+        description: error || "Could not apply your changes.",
+        variant: "destructive",
+      });
+    } else {
+      setItinerary(refinedPlan);
+    }
   }
 
   const showResults = isLoading || itinerary;
@@ -89,8 +93,6 @@ export default function HomePage() {
         {showResults && (
           <ResultsView 
             itinerary={itinerary}
-            flightDetails={flightDetails}
-            hotelDetails={hotelDetails}
             isLoading={isLoading || isRefining}
             onRefine={handleRefinementSubmit}
           />
