@@ -6,6 +6,10 @@ import {z} from 'genkit';
 export const GenerateInitialTripPlanOutputSchema = z.object({
   tripTitle: z.string().describe('The title of the trip.'),
   tripSummary: z.string().describe('A brief summary of the trip.'),
+  originCity: z.string().optional().describe('The origin city for the trip.'),
+  destinationCity: z.string().optional().describe('The destination city for the trip.'),
+  departureDate: z.string().optional().describe('The departure date in YYYY-MM-DD format.'),
+  returnDate: z.string().optional().describe('The return date in YYYY-MM-DD format.'),
   flightDetails: z
     .object({
       airline: z.string().describe('The airline for the flight.'),

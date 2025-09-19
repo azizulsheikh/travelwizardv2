@@ -37,7 +37,11 @@ export interface HotelDetails {
 export interface Itinerary {
     tripTitle: string;
     tripSummary: string;
-    flightDetails: FlightDetails;
+    originCity?: string;
+    destinationCity?: string;
+    departureDate?: string;
+    returnDate?: string;
+    flightDetails?: FlightDetails;
     hotelDetails?: HotelDetails;
     days: Day[];
 }
