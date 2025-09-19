@@ -1,4 +1,4 @@
-import { Wand2 } from 'lucide-react';
+import { Home, Wand2 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
@@ -13,7 +13,10 @@ export default function Header() {
           </Link>
           <div>
             <Button variant="outline" asChild className="rounded-full font-semibold">
-              <Link href="/">Home</Link>
+              <Link href="/">
+                <Home />
+                Home
+              </Link>
             </Button>
           </div>
         </div>
