@@ -9,7 +9,24 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {searchFlights} from '@/lib/amadeus';
 import {z} from 'genkit';
+
+const flightSearchTool = ai.defineTool(
+  {
+    name: 'searchFlights',
+    description: 'Search for flights based on origin, destination, and date.',
+    inputSchema: z.object({
+      originLocationCode: z.string().describe('The IATA code for the origin airport (e.g., "LHR" for London Heathrow).'),
+      destinationLocationCode: z.string().describe('The IATA code for the destination airport (e.g., "JFK" for New York JFK).'),
+      departureDate: z.string().describe('The departure date in YYYY-MM-DD format.'),
+      returnDate: z.string().optional().describe('The return date in YYYY-MM-DD format (for round-trip flights).'),
+      adults: z.number().describe('The number of adult passengers.'),
+    }),
+    outputSchema: z.any(),
+  },
+  async (input) => searchFlights(input)
+);
 
 const RefineGeneratedItineraryInputSchema = z.object({
   itinerary: z.string().describe('The previous travel itinerary in JSON format.'),
@@ -28,68 +45,69 @@ const refineItineraryPrompt = ai.definePrompt({
   name: 'refineItineraryPrompt',
   input: {schema: RefineGeneratedItineraryInputSchema},
   output: {schema: RefineGeneratedItineraryOutputSchema},
-  prompt: `You are an expert travel agent. A user has provided a follow-up request to refine their travel itinerary.  Your job is to modify the previous itinerary based on the new instructions.
+  tools: [flightSearchTool],
+  prompt: `You are an expert travel agent. A user has provided a follow-up request to refine their travel itinerary. Your job is to modify the previous itinerary based on the new instructions.
+
+If the user asks for different flight information, use the searchFlights tool to find a suitable flight. You must provide the IATA codes for the airports.
 
 Previous Itinerary:
-\`\`\`json
 {{{itinerary}}}
-\`\`\`
 
 Follow-up Request: {{{followUp}}}
 
 Generate a new, updated itinerary in JSON format that incorporates the user's feedback. The JSON object must adhere to the following schema:
 
 {
-  type: "OBJECT",
-  properties: {
-      tripTitle: { type: "STRING" },
-      tripSummary: { type: "STRING" },
-      flightDetails: {
-          type: "OBJECT",
-          properties: {
-              airline: { type: "STRING" },
-              flightNumber: { type: "STRING" },
-              departure: { type: "STRING" },
-              arrival: { type: "STRING" },
-              estimatedCost: { type: "STRING" }
+  "type": "OBJECT",
+  "properties": {
+      "tripTitle": { "type": "STRING" },
+      "tripSummary": { "type": "STRING" },
+      "flightDetails": {
+          "type": "OBJECT",
+          "properties": {
+              "airline": { "type": "STRING" },
+              "flightNumber": { "type": "STRING" },
+              "departure": { "type": "STRING" },
+              "arrival": { "type": "STRING" },
+              "estimatedCost": { "type": "STRING" }
           },
-           required: ["airline", "departure", "arrival", "estimatedCost"]
+           "required": ["airline", "departure", "arrival", "estimatedCost"]
       },
-      days: {
-          type: "ARRAY",
-          items: {
-              type: "OBJECT",
-              properties: {
-                  day: { type: "NUMBER" },
-                  theme: { type: "STRING" },
-                  activities: {
-                      type: "ARRAY",
-                      items: {
-                          type: "OBJECT",
-                          properties: {
-                              title: { type: "STRING" },
-                              startTime: { type: "STRING" },
-                              endTime: { type: "STRING" },
-                              description: { type: "STRING" },
-                              type: { type: "STRING", enum: ["transfer", "food", "activity", "lodging", "free-time"] },
-                              imageQuery: { type: "STRING" },
-                              lodgingDetails: {
-                                  type: "OBJECT",
-                                  properties: {
-                                      hotelName: { type: "STRING" },
-                                      estimatedCost: { type: "STRING" }
+      "days": {
+          "type": "ARRAY",
+          "items": {
+              "type": "OBJECT",
+              "properties": {
+                  "day": { "type": "NUMBER" },
+                  "theme": { "type": "STRING" },
+                  "activities": {
+                      "type": "ARRAY",
+                      "items": {
+                          "type": "OBJECT",
+                          "properties": {
+                              "title": { "type": "STRING" },
+                              "startTime": { "type": "STRING" },
+                              "endTime": { "type": "STRING" },
+                              "description": { "type": "STRING" },
+                              "type": { "type": "STRING", "enum": ["transfer", "food", "activity", "lodging", "free-time"] },
+                              "imageQuery": { "type": "STRING" },
+                              "lodgingDetails": {
+                                  "type": "OBJECT",
+                                  "properties": {
+                                      "hotelName": { "type": "STRING" },
+                                      "estimatedCost": { "type": "STRING" }
                                   }
                               }
                           },
-                          required: ["title", "startTime", "endTime", "type"]
+                          "required": ["title", "startTime", "endTime", "type"]
                       }
                   }
               },
-              required: ["day", "theme", "activities"]
+              "required": ["day", "theme", "activities"]
           }
       }
   },
-  required: ["tripTitle", "tripSummary", "days", "flightDetails"]
+  "required": ["tripTitle", "tripSummary", "days", "flightDetails"]
 }
 
 Ensure that the ENTIRE response is valid JSON. Do not include any markdown formatting or other text outside of the JSON structure.

@@ -9,7 +9,25 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {searchFlights} from '@/lib/amadeus';
 import {z} from 'genkit';
+
+const flightSearchTool = ai.defineTool(
+  {
+    name: 'searchFlights',
+    description: 'Search for flights based on origin, destination, and date.',
+    inputSchema: z.object({
+      originLocationCode: z.string().describe('The IATA code for the origin airport (e.g., "LHR" for London Heathrow).'),
+      destinationLocationCode: z.string().describe('The IATA code for the destination airport (e.g., "JFK" for New York JFK).'),
+      departureDate: z.string().describe('The departure date in YYYY-MM-DD format.'),
+      returnDate: z.string().optional().describe('The return date in YYYY-MM-DD format (for round-trip flights).'),
+      adults: z.number().describe('The number of adult passengers.'),
+    }),
+    outputSchema: z.any(),
+  },
+  async (input) => searchFlights(input)
+);
+
 
 const GenerateInitialTripPlanInputSchema = z.object({
   tripDescription: z
@@ -51,7 +69,7 @@ const GenerateInitialTripPlanOutputSchema = z.object({
             .string()
             .optional()
             .describe(
-              'A concise, descriptive search term for Unsplash (e.g., \"Eiffel Tower at night\") to fetch a relevant image.'
+              'A concise, descriptive search term for Unsplash (e.g., "Eiffel Tower at night") to fetch a relevant image.'
             ),
           lodgingDetails: z
             .object({
@@ -79,11 +97,14 @@ const prompt = ai.definePrompt({
   name: 'generateInitialTripPlanPrompt',
   input: {schema: GenerateInitialTripPlanInputSchema},
   output: {schema: GenerateInitialTripPlanOutputSchema},
+  tools: [flightSearchTool],
   prompt: `You are an expert travel agent. Create a detailed travel itinerary based on the user's request.
 
 User Request: {{{tripDescription}}}
 
-Include destinations, activities, and estimated costs. Return the itinerary as a JSON object.
+First, determine the origin and destination airports from the user's request, as well as travel dates. Use the searchFlights tool to find a suitable flight. You must provide the IATA codes for the airports.
+
+Then, include the real flight details, destinations, activities, and estimated costs in the plan. Return the itinerary as a JSON object.
 
 Ensure the JSON object adheres to the following schema:
 {
