@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { Itinerary } from '@/lib/types';
-import { handleGeneratePlan, handleRefinePlan } from '@/app/actions';
+import { handleGeneratePlan } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import HeroSection from './HeroSection';
 import ResultsView from './ResultsView';
@@ -11,7 +11,6 @@ import Image from 'next/image';
 export default function HomePage() {
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isRefining, setIsRefining] = useState(false);
   const { toast } = useToast();
 
   const handleInitialSubmit = async (prompt: string) => {
@@ -40,26 +39,6 @@ export default function HomePage() {
       setItinerary(null);
     } else {
       setItinerary(plan);
-      // Automatically trigger refinement for flights and hotels
-      handleAutoRefine(plan);
-    }
-  };
-
-  const handleAutoRefine = async (initialPlan: Itinerary) => {
-    setIsRefining(true);
-    const { plan: refinedPlan, error } = await handleRefinePlan(initialPlan, "Find flights and a hotel for this trip.");
-    setIsRefining(false);
-
-    if (error || !refinedPlan) {
-      toast({
-        title: "Could not fetch travel details",
-        description: "We couldn't find real-time flight or hotel data, but the itinerary is ready!",
-        variant: "default",
-      });
-      // Keep the initial plan if refinement fails
-      setItinerary(initialPlan);
-    } else {
-      setItinerary(refinedPlan);
     }
   };
 
@@ -82,17 +61,11 @@ export default function HomePage() {
         {showResults && (
           <ResultsView 
             itinerary={itinerary}
-            isLoading={isLoading || isRefining}
+            isLoading={isLoading}
             onRefine={async (followUp: string) => {
-              if (!itinerary) return;
-              setIsRefining(true);
-              const { plan: newPlan, error } = await handleRefinePlan(itinerary, followUp);
-              setIsRefining(false);
-              if (error || !newPlan) {
-                toast({ title: 'Error Refining Plan', description: error, variant: 'destructive'});
-              } else {
-                setItinerary(newPlan);
-              }
+              // This is a placeholder for now, as the new approach doesn't require a separate refinement step.
+              // In the future, this could be used to regenerate the plan with new instructions.
+              toast({ title: 'Refinement', description: 'This feature will be coming soon!'});
             }}
           />
         )}
