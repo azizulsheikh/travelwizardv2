@@ -26,17 +26,14 @@ export async function handleRefinePlan(itinerary: Itinerary, followUp: string): 
   try {
     const refinedPlanResult = await refineGeneratedItinerary({ itinerary: JSON.stringify(itinerary), followUp });
     
-    let plan: Itinerary;
-    if (typeof refinedPlanResult === 'string') {
-      plan = JSON.parse(refinedPlanResult) as Itinerary;
-    } else {
-      plan = refinedPlanResult as Itinerary;
-    }
+    // The result from the flow is the complete, updated itinerary object
+    const plan = refinedPlanResult as Itinerary;
 
-    // Merge the new details with the old itinerary
+    // Merge the new details with the old itinerary, giving priority to the new data
     const updatedItinerary: Itinerary = {
-      ...itinerary,
-      ...plan,
+      ...itinerary, // Start with the base itinerary
+      ...plan,      // Overwrite with any changes from the refinement
+      // Explicitly keep new details if they exist, otherwise fall back to old ones.
       flightDetails: plan.flightDetails || itinerary.flightDetails,
       hotelDetails: plan.hotelDetails || itinerary.hotelDetails,
     };
