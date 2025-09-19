@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import type { Itinerary, FlightDetails, HotelDetails } from '@/lib/types';
-import { handleGeneratePlan, handleRefinePlan } from '@/app/actions';
+import type { Itinerary } from '@/lib/types';
+import { handleGeneratePlan } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import HeroSection from './HeroSection';
 import ResultsView from './ResultsView';
@@ -11,7 +11,6 @@ import Image from 'next/image';
 export default function HomePage() {
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isRefining, setIsRefining] = useState(false);
   const { toast } = useToast();
 
   const handleInitialSubmit = async (prompt: string) => {
@@ -40,39 +39,8 @@ export default function HomePage() {
       setItinerary(null);
     } else {
       setItinerary(plan);
-      // Now, refine the plan to add flight and hotel details in the background
-      setIsRefining(true);
-      const { plan: refinedPlan, error: refinementError } = await handleRefinePlan(plan, "Find flights and hotels for this trip.");
-      setIsRefining(false);
-
-      if (refinementError) {
-        toast({
-          title: "Could not fetch travel details",
-          description: "We couldn't find real-time flight or hotel data, but the itinerary is ready!",
-        });
-      } else if (refinedPlan) {
-        setItinerary(refinedPlan);
-      }
     }
   };
-
-  const handleRefinementSubmit = async (followUp: string) => {
-    if (!itinerary) return;
-
-    setIsRefining(true);
-    const { plan: refinedPlan, error } = await handleRefinePlan(itinerary, followUp);
-    setIsRefining(false);
-
-    if (error || !refinedPlan) {
-      toast({
-        title: "Error Refining Plan",
-        description: error || "Could not apply your changes.",
-        variant: "destructive",
-      });
-    } else {
-      setItinerary(refinedPlan);
-    }
-  }
 
   const showResults = isLoading || itinerary;
 
@@ -93,8 +61,7 @@ export default function HomePage() {
         {showResults && (
           <ResultsView 
             itinerary={itinerary}
-            isLoading={isLoading || isRefining}
-            onRefine={handleRefinementSubmit}
+            isLoading={isLoading}
           />
         )}
       </div>

@@ -53,7 +53,7 @@ function RefinementForm({ onRefine, isLoading }: { onRefine: (followUp: string) 
         <form onSubmit={handleSubmit} className="relative">
           <Textarea
             id="followup-prompt"
-            placeholder="e.g., 'Find cheaper restaurants'"
+            placeholder="e.g., 'Make day 2 less busy.'"
             rows={2}
             value={followUp}
             onChange={(e) => setFollowUp(e.target.value)}
@@ -83,7 +83,8 @@ export default function IntrospectionSidebar({ isLoading, onRefine, itineraryExi
   
   // Show refinement form only if an itinerary exists and we are not loading.
   if (itineraryExists) {
-    return <RefinementForm onRefine={onRefine} isLoading={isLoading} />;
+    // The refinement functionality is temporarily disabled.
+    // return <RefinementForm onRefine={onRefine} isLoading={isLoading} />;
   }
 
   // If there's no itinerary and we are not loading (e.g., error state), show nothing or a placeholder.
