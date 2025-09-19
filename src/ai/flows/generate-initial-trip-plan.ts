@@ -115,7 +115,7 @@ const prompt = ai.definePrompt({
 
 User Request: {{{tripDescription}}}
 
-First, determine the origin and destination airports and cities from the user's request, as well as travel dates. You must provide the IATA codes. Use the searchFlights tool to find a suitable flight.
+First, determine the origin and destination airports and cities from the user's request, as well as travel dates. You must provide the IATA codes. Use the searchFlights tool to find a suitable flight. If no flights are found, respond with an error.
 
 Next, if the itinerary requires lodging, use the searchHotels tool to find a hotel in the destination city. You must select one hotel and include its real name and estimated cost in the plan.
 
@@ -137,7 +137,7 @@ Ensure the JSON object adheres to the following schema:
         "estimatedCost": { "type": "STRING" },
         "bookingUrl": { "type": "STRING", "format": "uri" }
       },
-      "required": ["airline", "departure", "arrival", "estimatedCost", "bookingUrl"]
+      "required": ["airline", "flightNumber", "departure", "arrival", "estimatedCost", "bookingUrl"]
     },
     "days": {
       "type": "ARRAY",

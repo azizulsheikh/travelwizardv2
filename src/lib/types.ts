@@ -21,7 +21,7 @@ export interface Day {
 
 export interface FlightDetails {
     airline: string;
-    flightNumber?: string;
+    flightNumber: string;
     departure: string;
     arrival: string;
     estimatedCost: string;
