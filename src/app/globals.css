@@ -24,6 +24,21 @@ body {
       background-position: 0% 50%;
     }
   }
+
+  .fly-away {
+    animation: fly-away 0.75s ease-in-out forwards;
+  }
+
+  @keyframes fly-away {
+    0% {
+      transform: translate(0, 0) rotate(0deg) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(150px, -50px) rotate(45deg) scale(0.5);
+      opacity: 0;
+    }
+  }
 }
 
 @layer base {

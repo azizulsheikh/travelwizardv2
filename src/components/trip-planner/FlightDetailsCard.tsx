@@ -1,44 +1,59 @@
+'use client';
+
+import { useState } from 'react';
 import { Plane } from "lucide-react";
 import type { FlightDetails } from "@/lib/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import { Button } from '@/components/ui/button';
 
 interface FlightDetailsCardProps {
     flightDetails: FlightDetails;
 }
 
 export default function FlightDetailsCard({ flightDetails }: FlightDetailsCardProps) {
+    const [isAnimating, setIsAnimating] = useState(false);
+
     if (!flightDetails) return null;
     
+    const handleAnimation = () => {
+        setIsAnimating(true);
+        setTimeout(() => {
+            window.open(flightDetails.bookingUrl || '#', '_blank', 'noopener,noreferrer');
+            setIsAnimating(false);
+        }, 750); // Match animation duration
+    }
+
     return (
-        <Link href={flightDetails.bookingUrl || '#'} target="_blank" rel="noopener noreferrer" className="block mb-8 group">
-            <Card className="border-l-4 border-primary group-hover:shadow-lg group-hover:border-primary/80 transition-shadow">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-3">
-                        <Plane className="text-primary" />
-                        Flight Information
-                        <span className="text-sm font-normal text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                            (Click to view on Google Flights)
-                        </span>
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-muted-foreground">
-                        <div>
-                            <strong>Airline:</strong> {flightDetails.airline || 'N/A'} {flightDetails.flightNumber ? `(${flightDetails.flightNumber})` : ''}
-                        </div>
-                        <div>
-                            <strong>Estimated Cost:</strong> {flightDetails.estimatedCost || 'N/A'}
-                        </div>
-                        <div>
-                            <strong>Departure:</strong> {flightDetails.departure || 'N/A'}
-                        </div>
-                        <div>
-                            <strong>Arrival:</strong> {flightDetails.arrival || 'N/A'}
-                        </div>
+        <Card className="border-l-4 border-primary hover:shadow-lg transition-shadow mb-8">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                    <Plane className="text-primary" />
+                    Flight Information
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-muted-foreground">
+                    <div>
+                        <strong>Airline:</strong> {flightDetails.airline || 'N/A'} {flightDetails.flightNumber ? `(${flightDetails.flightNumber})` : ''}
                     </div>
-                </CardContent>
-            </Card>
-        </Link>
+                    <div>
+                        <strong>Estimated Cost:</strong> {flightDetails.estimatedCost || 'N/A'}
+                    </div>
+                    <div>
+                        <strong>Departure:</strong> {flightDetails.departure || 'N/A'}
+                    </div>
+                    <div>
+                        <strong>Arrival:</strong> {flightDetails.arrival || 'N/A'}
+                    </div>
+                </div>
+            </CardContent>
+            <CardFooter className="flex justify-center">
+                 <Button onClick={handleAnimation} disabled={isAnimating}>
+                    <Plane className={`mr-2 ${isAnimating ? 'fly-away' : ''}`} />
+                    View on Google Flights
+                </Button>
+            </CardFooter>
+        </Card>
     );
 }
