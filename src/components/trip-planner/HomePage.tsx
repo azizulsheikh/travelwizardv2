@@ -6,6 +6,7 @@ import { handleGeneratePlan, handleRefinePlan } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import HeroSection from './HeroSection';
 import ResultsView from './ResultsView';
+import Image from 'next/image';
 
 export default function HomePage() {
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
@@ -74,15 +75,27 @@ export default function HomePage() {
   const showResults = isLoading || itinerary;
 
   return (
-    <>
-      {!showResults && <HeroSection onSubmit={handleInitialSubmit} />}
-      {showResults && (
-        <ResultsView 
-          itinerary={itinerary}
-          isLoading={isLoading}
-          onRefine={handleRefinementSubmit}
+    <div className="relative flex flex-col min-h-screen">
+       <div className="absolute inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop"
+          alt="Tropical beach destination"
+          fill
+          style={{ objectFit: 'cover' }}
+          priority
         />
-      )}
-    </>
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+      </div>
+      <div className="relative z-10 flex flex-col flex-grow">
+        {!showResults && <HeroSection onSubmit={handleInitialSubmit} />}
+        {showResults && (
+          <ResultsView 
+            itinerary={itinerary}
+            isLoading={isLoading}
+            onRefine={handleRefinementSubmit}
+          />
+        )}
+      </div>
+    </div>
   );
 }
