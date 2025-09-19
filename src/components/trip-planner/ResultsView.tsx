@@ -5,8 +5,6 @@ import IntrospectionSidebar from './IntrospectionSidebar';
 import ItineraryDisplay from './ItineraryDisplay';
 import Image from 'next/image';
 import LoadingDisplay from './LoadingDisplay';
-import FlightDetailsCard from './FlightDetailsCard';
-import HotelDetailsCard from './HotelDetailsCard';
 
 interface ResultsViewProps {
   itinerary: Itinerary | null;
@@ -41,11 +39,7 @@ export default function ResultsView({ itinerary, isLoading, onRefine }: ResultsV
             {isLoading && !itinerary ? (
               <LoadingDisplay />
             ) : itinerary ? (
-              <>
-                {itinerary.flightDetails && <FlightDetailsCard flightDetails={itinerary.flightDetails} />}
-                {itinerary.hotelDetails && <HotelDetailsCard hotelDetails={itinerary.hotelDetails} />}
                 <ItineraryDisplay itinerary={itinerary} isLoading={isLoading} />
-              </>
             ) : null}
           </div>
         </div>

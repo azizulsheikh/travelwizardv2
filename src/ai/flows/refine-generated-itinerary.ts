@@ -28,20 +28,20 @@ const refineItineraryPrompt = ai.definePrompt({
   prompt: `You are an expert travel agent assistant. Your task is to refine an existing travel itinerary based on a user's follow-up request.
 
 You have access to the following tools:
-- \`searchFlights\`: To find real-time flight information.
-- \`searchHotels\`: To find available hotels in a city.
+- \`flightSearchTool\`: To find real-time flight information.
+- \`hotelSearchTool\`: To find available hotels in a city.
 
 Follow these instructions:
 
 1.  **Analyze the Request**: Read the user's follow-up request to understand what needs to be changed or added. The request will most likely be to find flights and hotels.
 2.  **Use Tools**:
-    *   If the request involves flights, use the \`searchFlights\` tool with the correct parameters from the itinerary (origin, destination, dates).
-    *   If the request involves hotels, use the \`searchHotels\` tool with the destination city's IATA code.
+    *   If the request involves flights, use the \`flightSearchTool\` with the correct parameters from the itinerary (origin, destination, dates).
+    *   If the request involves hotels, use the \`hotelSearchTool\` with the destination city's IATA code. The tool returns a list of hotels.
 3.  **Integrate Results**:
     *   Take the results from the tool calls and integrate them into the \`flightDetails\` and \`hotelDetails\` sections of the itinerary.
-    *   When selecting a hotel, pick the **first one** from the search results.
-    *   For the hotel booking URL, create a Google search URL like this: \`https://www.google.com/search?q=book+hotel+THE_HOTEL_NAME\`.
-4.  **Return Updated Itinerary**: Return the entire itinerary as a single, valid JSON object, updated with the new information. The final output must conform to the provided JSON schema.
+    *   When selecting a hotel, you **must pick the first one** from the search results list.
+    *   For the hotel booking URL, you **must create a Google search URL** in this exact format: \`https://www.google.com/search?q=book+hotel+THE_HOTEL_NAME\`, replacing "THE_HOTEL_NAME" with the actual name of the hotel.
+4.  **Return Updated Itinerary**: Return the entire itinerary as a single, valid JSON object, updated with the new information. The final output must conform to the provided JSON schema. Do not modify the day-to-day itinerary unless specifically asked.
 
 Existing Itinerary:
 {{{json itinerary}}}
