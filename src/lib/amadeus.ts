@@ -42,9 +42,27 @@ export async function searchFlights(search: {
         })),
       }));
 
+      const googleFlightsUrl = new URL('https://www.google.com/flights');
+      const origin = search.originLocationCode;
+      const destination = search.destinationLocationCode;
+      const departureDate = search.departureDate;
+      const returnDate = search.returnDate;
+
+      let flightItinerarySpec = `${origin}.${destination}.${departureDate}`;
+      if (returnDate) {
+        flightItinerarySpec += `*${destination}.${origin}.${returnDate}`;
+      }
+      googleFlightsUrl.searchParams.set('flt', flightItinerarySpec);
+      googleFlightsUrl.searchParams.set('c', 'USD');
+      googleFlightsUrl.searchParams.set('p', flight.price.total);
+      googleFlightsUrl.searchParams.set('gl', 'us'); // Geo-location
+      googleFlightsUrl.searchParams.set('hl', 'en'); // Language
+
+
       return {
         price: flight.price.total,
         itineraries: simplifiedItinerary,
+        bookingUrl: googleFlightsUrl.toString(),
       };
     }
     return { error: 'No flights found' };

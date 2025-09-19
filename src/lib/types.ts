@@ -25,6 +25,7 @@ export interface FlightDetails {
     departure: string;
     arrival: string;
     estimatedCost: string;
+    bookingUrl: string;
 }
 
 export interface Itinerary {

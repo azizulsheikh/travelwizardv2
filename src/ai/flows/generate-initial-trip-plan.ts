@@ -60,6 +60,7 @@ const GenerateInitialTripPlanOutputSchema = z.object({
       departure: z.string().describe('The departure airport and time.'),
       arrival: z.string().describe('The arrival airport and time.'),
       estimatedCost: z.string().describe('The estimated cost of the flight.'),
+      bookingUrl: z.string().url().describe('The URL to book the flight.'),
     })
     .describe('Details about the recommended flight.'),
   days: z.array(
@@ -118,7 +119,7 @@ First, determine the origin and destination airports and cities from the user's 
 
 Next, if the itinerary requires lodging, use the searchHotels tool to find a hotel in the destination city. You must select one hotel and include its real name and estimated cost in the plan.
 
-Then, include the real flight details, hotel details, destinations, activities, and estimated costs in the plan. Return the itinerary as a JSON object.
+Then, include the real flight details (including the bookingUrl), hotel details, destinations, activities, and estimated costs in the plan. Return the itinerary as a JSON object.
 
 Ensure the JSON object adheres to the following schema:
 {
@@ -133,9 +134,10 @@ Ensure the JSON object adheres to the following schema:
         "flightNumber": { "type": "STRING" },
         "departure": { "type": "STRING" },
         "arrival": { "type": "STRING" },
-        "estimatedCost": { "type": "STRING" }
+        "estimatedCost": { "type": "STRING" },
+        "bookingUrl": { "type": "STRING", "format": "uri" }
       },
-      "required": ["airline", "departure", "arrival", "estimatedCost"]
+      "required": ["airline", "departure", "arrival", "estimatedCost", "bookingUrl"]
     },
     "days": {
       "type": "ARRAY",
