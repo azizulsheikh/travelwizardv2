@@ -2,7 +2,6 @@ import type { Activity } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import ActivityIcon from "./ActivityIcon";
 import { DollarSign, Hotel } from "lucide-react";
-import Image from "next/image";
 
 function LodgingCard({ activity }: { activity: Activity }) {
   if (activity.type !== 'lodging' || !activity.lodgingDetails) {
@@ -23,21 +22,8 @@ function LodgingCard({ activity }: { activity: Activity }) {
 }
 
 export default function ActivityCard({ activity }: { activity: Activity }) {
-  const imageUrl = `https://source.unsplash.com/400x300/?${activity.imageQuery || activity.title}`;
-
   return (
     <Card className="overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 bg-white/80 dark:bg-black/50 backdrop-blur-sm flex flex-col">
-      {activity.imageQuery && (
-        <div className="relative w-full h-32">
-            <Image 
-                src={imageUrl}
-                alt={activity.title}
-                fill
-                style={{ objectFit: 'cover' }}
-                data-ai-hint={activity.imageQuery}
-            />
-        </div>
-      )}
       <CardContent className="p-4 flex items-start gap-x-4 flex-grow">
         <div className="bg-muted p-2 rounded-full mt-1">
           <ActivityIcon type={activity.type} className="w-6 h-6 text-muted-foreground" />
