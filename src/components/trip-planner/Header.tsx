@@ -8,7 +8,7 @@ export default function Header() {
       <nav className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-2xl font-bold group">
-            <Wand2 className="text-primary-foreground group-hover:animate-pulse" />
+            <Wand2 className="group-hover:animate-pulse" />
             <span className="font-headline transition-transform duration-300 group-hover:scale-105 text-animated-gradient">TripWizard AI</span>
           </Link>
           <div>
