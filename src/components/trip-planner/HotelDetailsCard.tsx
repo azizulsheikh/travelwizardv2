@@ -10,6 +10,14 @@ interface HotelDetailsCardProps {
   hotelDetails: HotelDetails;
 }
 
+function formatCost(cost: any) {
+    if (!cost) return 'N/A';
+    if (typeof cost === 'object' && cost.value && cost.currency) {
+        return `${cost.value} ${cost.currency}`;
+    }
+    return cost.toString();
+}
+
 export default function HotelDetailsCard({ hotelDetails }: HotelDetailsCardProps) {
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -40,7 +48,7 @@ export default function HotelDetailsCard({ hotelDetails }: HotelDetailsCardProps
           </div>
           <div className='flex gap-2 items-center'>
             <DollarSign className="text-primary h-5 w-5" />
-            <strong>Cost:</strong> {hotelDetails.estimatedCost || 'N/A'}
+            <strong>Cost:</strong> {formatCost(hotelDetails.estimatedCost)}
           </div>
         </div>
       </CardContent>

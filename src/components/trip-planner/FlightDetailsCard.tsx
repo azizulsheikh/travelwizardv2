@@ -11,6 +11,14 @@ interface FlightDetailsCardProps {
     flightDetails: FlightDetails;
 }
 
+function formatCost(cost: any) {
+    if (!cost) return 'N/A';
+    if (typeof cost === 'object' && cost.value && cost.currency) {
+        return `${cost.value} ${cost.currency}`;
+    }
+    return cost.toString();
+}
+
 export default function FlightDetailsCard({ flightDetails }: FlightDetailsCardProps) {
     const [isAnimating, setIsAnimating] = useState(false);
 
@@ -38,7 +46,7 @@ export default function FlightDetailsCard({ flightDetails }: FlightDetailsCardPr
                         <strong>Airline:</strong> {flightDetails.airline || 'N/A'} {flightDetails.flightNumber ? `(${flightDetails.flightNumber})` : ''}
                     </div>
                     <div>
-                        <strong>Estimated Cost:</strong> {flightDetails.estimatedCost || 'N/A'}
+                        <strong>Estimated Cost:</strong> {formatCost(flightDetails.estimatedCost)}
                     </div>
                     <div>
                         <strong>Departure:</strong> {flightDetails.departure || 'N/A'}
