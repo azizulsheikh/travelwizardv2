@@ -73,17 +73,19 @@ export async function searchFlights(search: {
 export async function searchHotels(search: { cityCode: string }) {
   const amadeusClient = getAmadeusClient();
   try {
-    const response = await amadeusClient.shopping.hotelOffers.getByCity.get(search);
+    const response = await amadeusClient.shopping.hotelOffers.get({
+      cityCode: search.cityCode,
+    });
     if (response.data && response.data.length > 0) {
-      // Return a simplified list of up to 5 hotels
-      return response.data.slice(0, 5).map((offer: any) => ({
-        hotelName: offer.hotel.name,
-        // Assuming the first offer has a price
+      const hotel = response.data[0];
+      return {
+        hotelName: hotel.hotel.name,
         estimatedCost: {
-            currency: offer.offers[0].price.currency,
-            value: offer.offers[0].price.total
+          currency: hotel.offers[0].price.currency,
+          value: hotel.offers[0].price.total,
         },
-      }));
+        bookingUrl: `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(hotel.hotel.name)}`,
+      };
     }
     return { error: 'No hotels found' };
   } catch (error) {
