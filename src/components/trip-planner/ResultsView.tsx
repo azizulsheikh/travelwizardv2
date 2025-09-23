@@ -23,14 +23,14 @@ export default function ResultsView({
   messages,
 }: ResultsViewProps) {
   
-  const showImage = isLoading || itinerary || isRefining;
-  const showItinerary = itinerary && !isRefining;
+  const showItineraryContent = itinerary && !isLoading && !isRefining;
+  const showLoading = isLoading || isRefining;
 
   return (
     <div className="container mx-auto p-4 md:p-8 flex-grow">
       <div className="flex gap-8 h-full">
         <div className="w-full lg:w-3/4 relative p-6 rounded-2xl shadow-lg">
-          {showImage && (
+          {(showItineraryContent || showLoading) && (
             <div className="absolute inset-0">
               <Image
                 src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?q=80&w=2070&auto=format&fit=crop"
@@ -44,9 +44,9 @@ export default function ResultsView({
             </div>
           )}
           <div className="relative">
-            {showItinerary ? (
+            {showItineraryContent ? (
               <ItineraryDisplay itinerary={itinerary} isLoading={isLoading} />
-            ) : isRefining ? (
+            ) : showLoading ? (
               <LoadingDisplay />
             ) : (
               <div className="text-center p-8">
