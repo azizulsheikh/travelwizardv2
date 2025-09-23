@@ -51,7 +51,7 @@ The user's trip description is:
 
 Your primary goal is to generate a creative, engaging, and plausible travel itinerary. The current date is {{currentDate}}.
 
-1.  **Extract Key Details**: From the user's request, identify the origin city, destination city, departure date, and return date. Determine the 3-letter IATA codes for the origin and destination cities (e.g., "LHR" for London, "CDG" for Paris). **If dates are not specified or are in the past, you MUST use plausible future dates relative to the current date. For example, if the current date is 2024-06-05 and the user asks for "a trip next week", the departure date should be around 2024-06-12.** The current year is ${new Date().getFullYear()}.
+1.  **Extract Key Details**: From the user's request, identify the origin city, destination city, departure date, and return date. Determine the 3-letter IATA codes for the origin and destination cities (e.g., "LHR" for London, "CDG" for Paris). **If dates are not specified or are in the past, you MUST use plausible future dates relative to the current date. For example, if the current date is 2024-06-05 and the user asks for "a trip next week", the departure date should be around 2024-06-12.**
 2.  **Invent Flight and Hotel Details**: Create plausible, fictional details for flights (airline, flight number) and a hotel (name).
 3.  **Construct Google URLs**:
     *   **Flight URL**: You MUST create a Google Flights search URL. The format MUST be exactly: \`https://www.google.com/travel/flights/search?q=flights from {originCityIata} to {destinationCityIata} on {departureDate} returning {returnDate}\`. Replace the bracketed values.
