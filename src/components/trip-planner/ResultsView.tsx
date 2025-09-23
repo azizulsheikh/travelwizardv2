@@ -1,22 +1,46 @@
 'use client';
 
-import type { Itinerary } from '@/lib/types';
+import type { Itinerary, TripDetails } from '@/lib/types';
 import ItineraryDisplay from './ItineraryDisplay';
 import Image from 'next/image';
 import LoadingDisplay from './LoadingDisplay';
 import IntrospectionSidebar from './IntrospectionSidebar';
+import TripDetailsForm from './TripDetailsForm';
 
 interface ResultsViewProps {
   itinerary: Itinerary | null;
   isLoading: boolean;
   onRefine: (followUp: string) => void;
+  showDetailsForm: boolean;
+  tripDetails: TripDetails | null;
+  initialPrompt: string;
+  onDetailsSubmit: (details: TripDetails) => void;
+  onDetailsClose: () => void;
 }
 
-export default function ResultsView({ itinerary, isLoading, onRefine }: ResultsViewProps) {
-  const showImage = isLoading || itinerary;
+export default function ResultsView({ 
+  itinerary, 
+  isLoading, 
+  onRefine,
+  showDetailsForm,
+  tripDetails,
+  initialPrompt,
+  onDetailsSubmit,
+  onDetailsClose
+}: ResultsViewProps) {
+  const showImage = isLoading || itinerary || showDetailsForm;
 
   return (
     <div className="container mx-auto p-4 md:p-8 flex-grow">
+      {tripDetails && (
+        <TripDetailsForm
+          isOpen={showDetailsForm}
+          onClose={onDetailsClose}
+          onSubmit={onDetailsSubmit}
+          initialDetails={tripDetails}
+          initialPrompt={initialPrompt}
+        />
+       )}
       <div className="flex gap-8 h-full">
         <div className="w-full lg:w-3/4 relative p-6 rounded-2xl shadow-lg">
           {showImage && (

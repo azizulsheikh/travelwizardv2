@@ -7,7 +7,6 @@ import { useToast } from '@/hooks/use-toast';
 import HeroSection from './HeroSection';
 import ResultsView from './ResultsView';
 import Image from 'next/image';
-import TripDetailsForm from './TripDetailsForm';
 
 export default function HomePage() {
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
@@ -32,7 +31,6 @@ export default function HomePage() {
     setItinerary(null);
     setInitialPrompt(prompt);
 
-    // Step 1: Extract details first
     const { details, error: extractError } = await handleExtractDetails(prompt);
 
     if (extractError || !details) {
@@ -45,20 +43,18 @@ export default function HomePage() {
       return;
     }
     
-    // Step 2: Check if destination is missing. If so, show the form.
     if (!details.destinationCity) {
       setTripDetails(details);
       setShowDetailsForm(true);
-      // Keep isLoading = true so the results view stays active
+      // isLoading remains true to keep the ResultsView visible
     } else {
-      // If we have enough info, generate the plan directly.
       await generatePlan(prompt);
     }
   };
 
   const generatePlan = async (description: string) => {
     setShowDetailsForm(false);
-    setIsLoading(true);
+    setIsLoading(true); // Ensure loading state is active
     setItinerary(null);
 
     const { plan, error } = await handleGeneratePlan(description);
@@ -73,7 +69,6 @@ export default function HomePage() {
       setItinerary(null);
     } else {
       setItinerary(plan);
-      // Now, refine this plan with live data in the background
       const { plan: refinedPlan, error: refineError } = await handleRefineWithApi(plan);
       setIsLoading(false);
       if (refineError || !refinedPlan) {
@@ -81,7 +76,7 @@ export default function HomePage() {
           title: "Could not fetch travel details",
           description: "We couldn't find real-time flight or hotel data, but the itinerary is ready!",
         });
-        setItinerary(plan); // Keep the original creative plan
+        setItinerary(plan); 
       } else {
         setItinerary(refinedPlan);
       }
@@ -89,7 +84,6 @@ export default function HomePage() {
   };
   
   const handleDetailsFormSubmit = (details: TripDetails) => {
-    // Construct a more detailed prompt from the form
     let newPrompt = initialPrompt;
     if (details.originCity) newPrompt += ` from ${details.originCity}`;
     if (details.destinationCity) newPrompt += ` to ${details.destinationCity}`;
@@ -98,6 +92,11 @@ export default function HomePage() {
     
     generatePlan(newPrompt);
   };
+
+  const handleCloseForm = () => {
+    setShowDetailsForm(false);
+    generatePlan(initialPrompt);
+  }
 
 
   const handleRefine = async (refinementPrompt: string) => {
@@ -119,7 +118,7 @@ export default function HomePage() {
   };
 
   const showResults = isLoading || itinerary;
-  const isGenerating = (isLoading || isRefining) && !showDetailsForm;
+  const isGenerating = isLoading && !showDetailsForm;
 
   return (
     <div className="relative flex flex-col min-h-screen">
@@ -136,25 +135,16 @@ export default function HomePage() {
       <div className="relative z-10 flex flex-col flex-grow">
         {!showResults && <HeroSection onSubmit={handleInitialSubmit} />}
         
-        {tripDetails && (
-            <TripDetailsForm
-                isOpen={showDetailsForm}
-                onClose={() => {
-                    setShowDetailsForm(false);
-                    // If user closes without submitting, proceed with original prompt
-                    generatePlan(initialPrompt);
-                }}
-                onSubmit={handleDetailsFormSubmit}
-                initialDetails={tripDetails}
-                initialPrompt={initialPrompt}
-            />
-        )}
-        
         {showResults && (
           <ResultsView 
             itinerary={itinerary}
             isLoading={isGenerating}
             onRefine={handleRefine}
+            showDetailsForm={showDetailsForm}
+            tripDetails={tripDetails}
+            initialPrompt={initialPrompt}
+            onDetailsSubmit={handleDetailsFormSubmit}
+            onDetailsClose={handleCloseForm}
           />
         )}
       </div>
