@@ -49,7 +49,7 @@ export default function HomePage() {
     if (!details.destinationCity) {
       setTripDetails(details);
       setShowDetailsForm(true);
-      setIsLoading(false);
+      // Keep isLoading = true so the results view stays active
     } else {
       // If we have enough info, generate the plan directly.
       await generatePlan(prompt);
@@ -119,6 +119,7 @@ export default function HomePage() {
   };
 
   const showResults = isLoading || itinerary;
+  const isGenerating = (isLoading || isRefining) && !showDetailsForm;
 
   return (
     <div className="relative flex flex-col min-h-screen">
@@ -152,7 +153,7 @@ export default function HomePage() {
         {showResults && (
           <ResultsView 
             itinerary={itinerary}
-            isLoading={isLoading || isRefining}
+            isLoading={isGenerating}
             onRefine={handleRefine}
           />
         )}
