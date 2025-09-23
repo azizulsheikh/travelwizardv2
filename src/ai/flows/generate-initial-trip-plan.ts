@@ -33,10 +33,9 @@ const FlowInputSchema = GenerateInitialTripPlanInputSchema.extend({
 export async function generateInitialTripPlan(
   input: GenerateInitialTripPlanInput
 ): Promise<GenerateInitialTripPlanOutput> {
-  // Get the current date in YYYY-MM-DD format
   const currentDate = new Date().toISOString().split('T')[0];
   return generateInitialTripPlanFlow({
-    tripDescription: input.tripDescription,
+    ...input,
     currentDate,
   });
 }
