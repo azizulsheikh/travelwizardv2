@@ -26,9 +26,9 @@ const refineItineraryPrompt = ai.definePrompt({
   output: { schema: GenerateInitialTripPlanOutputSchema },
   prompt: `You are an expert travel agent assistant. Your task is to refine an existing travel itinerary based on a user's follow-up request.
 
-1.  **Analyze the Request**: Read the user's follow-up request to understand what needs to be changed in the itinerary.
-2.  **Modify the Itinerary**: Update the itinerary based on the user's request. You may need to add, remove, or change activities, days, or even the destination.
-3.  **Regenerate Details**: If the core details of the trip change (like dates or destination), regenerate the plausible flight and hotel details, including the Google search links.
+1.  **Analyze the Request**: Read the user's follow-up request to understand what needs to be changed in the day-to-day activities of the itinerary.
+2.  **Modify the Itinerary**: Update the \`days\` and \`activities\` in the itinerary based on the user's request. You may need to add, remove, or change activities, themes, or entire days.
+3.  **Do Not Change Other Details**: You **must not** alter the \`flightDetails\` or \`hotelDetails\`. Return them exactly as they are in the original itinerary.
 4.  **Return Updated Itinerary**: Return the entire itinerary as a single, valid JSON object that conforms to the output schema.
 
 Existing Itinerary:
