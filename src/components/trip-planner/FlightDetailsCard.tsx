@@ -62,7 +62,7 @@ export default function FlightDetailsCard({ flightDetails }: FlightDetailsCardPr
                 <CardFooter className="flex justify-center">
                     <Button onClick={handleAnimation} disabled={isAnimating}>
                         <Plane className={`mr-2 ${isAnimating ? 'fly-away' : ''}`} />
-                        View on Skyscanner
+                        View on Google
                     </Button>
                 </CardFooter>
             )}

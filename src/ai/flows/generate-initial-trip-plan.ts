@@ -40,9 +40,13 @@ const prompt = ai.definePrompt({
 Your primary goal is to generate a creative, engaging, and plausible travel itinerary.
 
 1.  **Extract Key Details**: From the user's request, identify the origin city, destination city, departure date, and return date. Determine the 3-letter IATA codes for the origin and destination cities (e.g., "LHR" for London, "CDG" for Paris). **If any dates are in the past or not specified, you MUST use today's date for the departure date and a suitable future date for the return.**
-2.  **Construct Itinerary**: Build a day-by-day itinerary with a theme for each day and a list of activities. For each activity, provide a title, start time, end time, a brief description, and a type (e.g., food, activity, free-time).
-3.  **Image Queries**: For each activity, generate a concise, descriptive search term for Unsplash (e.g., "Eiffel Tower at night") that can be used to fetch a relevant image.
-4.  **Output JSON**: Ensure the entire response is a single, valid JSON object that adheres to the output schema.
+2.  **Invent Flight and Hotel Details**: Create plausible, fictional details for flights (airline, flight number) and a hotel (name).
+3.  **Construct Google URLs**:
+    *   **Flight URL**: You MUST create a Google Flights search URL. The format MUST be exactly: \`https://www.google.com/travel/flights/search?q=flights from {originCityIata} to {destinationCityIata} on {departureDate} returning {returnDate}\`. Replace the bracketed values.
+    *   **Hotel URL**: You MUST create a Google Hotels search URL. The format MUST be exactly: \`https://www.google.com/travel/hotels/search?q=hotels in {destinationCityIata}&checkin={departureDate}&checkout={returnDate}\`. Replace the bracketed values.
+4.  **Construct Itinerary**: Build a day-by-day itinerary with a theme for each day and a list of activities. For each activity, provide a title, start time, end time, a brief description, and a type (e.g., food, activity, free-time).
+5.  **Image Queries**: For each activity, generate a concise, descriptive search term for Unsplash (e.g., "Eiffel Tower at night") that can be used to fetch a relevant image.
+6.  **Output JSON**: Ensure the entire response is a single, valid JSON object that adheres to the output schema.
 `,
 });
 
