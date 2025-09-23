@@ -1,17 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import type { Itinerary } from '@/lib/types';
-import { handleGeneratePlan, handleRefineItinerary, handleRefineWithApi } from '@/app/actions';
+import { useState } from 'react';
+import type { Itinerary, TripDetails } from '@/lib/types';
+import { handleGeneratePlan, handleRefineItinerary, handleRefineWithApi, handleExtractDetails } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import HeroSection from './HeroSection';
 import ResultsView from './ResultsView';
 import Image from 'next/image';
+import TripDetailsForm from './TripDetailsForm';
 
 export default function HomePage() {
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefining, setIsRefining] = useState(false);
+  const [showDetailsForm, setShowDetailsForm] = useState(false);
+  const [initialPrompt, setInitialPrompt] = useState('');
+  const [tripDetails, setTripDetails] = useState<TripDetails | null>(null);
   const { toast } = useToast();
 
   const handleInitialSubmit = async (prompt: string) => {
@@ -26,8 +30,38 @@ export default function HomePage() {
     
     setIsLoading(true);
     setItinerary(null);
+    setInitialPrompt(prompt);
+
+    // Step 1: Extract details first
+    const { details, error: extractError } = await handleExtractDetails(prompt);
+
+    if (extractError || !details) {
+      toast({
+        title: "Could not understand prompt",
+        description: "Please try rephrasing your trip description.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
     
-    const { plan, error } = await handleGeneratePlan(prompt);
+    // Step 2: Check if destination is missing. If so, show the form.
+    if (!details.destinationCity) {
+      setTripDetails(details);
+      setShowDetailsForm(true);
+      setIsLoading(false);
+    } else {
+      // If we have enough info, generate the plan directly.
+      await generatePlan(prompt);
+    }
+  };
+
+  const generatePlan = async (description: string) => {
+    setShowDetailsForm(false);
+    setIsLoading(true);
+    setItinerary(null);
+
+    const { plan, error } = await handleGeneratePlan(description);
 
     if (error || !plan) {
       setIsLoading(false);
@@ -53,6 +87,18 @@ export default function HomePage() {
       }
     }
   };
+  
+  const handleDetailsFormSubmit = (details: TripDetails) => {
+    // Construct a more detailed prompt from the form
+    let newPrompt = initialPrompt;
+    if (details.originCity) newPrompt += ` from ${details.originCity}`;
+    if (details.destinationCity) newPrompt += ` to ${details.destinationCity}`;
+    if (details.departureDate) newPrompt += ` leaving on ${details.departureDate}`;
+    if (details.returnDate) newPrompt += ` and returning on ${details.returnDate}`;
+    
+    generatePlan(newPrompt);
+  };
+
 
   const handleRefine = async (refinementPrompt: string) => {
     if (!itinerary) return;
@@ -88,6 +134,21 @@ export default function HomePage() {
       </div>
       <div className="relative z-10 flex flex-col flex-grow">
         {!showResults && <HeroSection onSubmit={handleInitialSubmit} />}
+        
+        {tripDetails && (
+            <TripDetailsForm
+                isOpen={showDetailsForm}
+                onClose={() => {
+                    setShowDetailsForm(false);
+                    // If user closes without submitting, proceed with original prompt
+                    generatePlan(initialPrompt);
+                }}
+                onSubmit={handleDetailsFormSubmit}
+                initialDetails={tripDetails}
+                initialPrompt={initialPrompt}
+            />
+        )}
+        
         {showResults && (
           <ResultsView 
             itinerary={itinerary}

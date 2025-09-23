@@ -43,3 +43,10 @@ export interface Itinerary {
     departureDate?: string;
     returnDate?: string;
 }
+
+export interface TripDetails {
+    originCity?: string;
+    destinationCity?: string;
+    departureDate?: string;
+    returnDate?: string;
+}

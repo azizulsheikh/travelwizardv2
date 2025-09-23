@@ -1,9 +1,25 @@
 'use server';
 
+import { extractTripDetails } from '@/ai/flows/extract-trip-details';
 import { generateInitialTripPlan } from '@/ai/flows/generate-initial-trip-plan';
 import { refineGeneratedItinerary } from '@/ai/flows/refine-generated-itinerary';
 import { refineItinerary } from '@/ai/flows/refine-itinerary';
-import type { Itinerary } from '@/lib/types';
+import type { Itinerary, TripDetails } from '@/lib/types';
+
+export async function handleExtractDetails(tripDescription: string): Promise<{ details: TripDetails | null; error: string | null; }> {
+    if (!tripDescription) {
+        return { details: null, error: 'Please provide a trip description.' };
+    }
+
+    try {
+        const details = await extractTripDetails({ tripDescription });
+        return { details, error: null };
+    } catch (e) {
+        console.error(e);
+        return { details: null, error: 'Failed to extract trip details.' };
+    }
+}
+
 
 export async function handleGeneratePlan(tripDescription: string): Promise<{ plan: Itinerary | null; error: string | null; }> {
   if (!tripDescription) {
