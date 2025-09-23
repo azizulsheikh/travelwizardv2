@@ -44,12 +44,14 @@ export async function searchFlights(search: {
       const departure = `${firstSegment.departure.iataCode} at ${firstSegment.departure.at}`;
       const arrival = `${firstItinerary.segments[firstItinerary.segments.length - 1].arrival.iataCode} at ${firstItinerary.segments[firstItinerary.segments.length - 1].arrival.at}`;
       
-      const skyscannerUrl = new URL('https://www.skyscanner.com/transport/flights/');
+      const baseUrl = 'https://www.skyscanner.com/transport/flights/';
       const from = search.originLocationCode.toLowerCase();
       const to = search.destinationLocationCode.toLowerCase();
       const departDate = search.departureDate.substring(2).replace(/-/g, '');
-      const returnDate = search.returnDate ? search.returnDate.substring(2).replace(/-/g, '') : '';
-      skyscannerUrl.pathname += `${from}/${to}/${departDate}/${returnDate}`;
+      const returnDateFormatted = search.returnDate ? search.returnDate.substring(2).replace(/-/g, '') : '';
+      
+      const path = [from, to, departDate, returnDateFormatted].filter(Boolean).join('/');
+      const bookingUrl = `${baseUrl}${path}`;
       
       return {
         airline: airline,
@@ -60,7 +62,7 @@ export async function searchFlights(search: {
           currency: flight.price.currency,
           value: flight.price.total,
         },
-        bookingUrl: skyscannerUrl.toString(),
+        bookingUrl: bookingUrl,
       };
     }
     return { error: 'No flights found' };
