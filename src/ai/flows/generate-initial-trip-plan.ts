@@ -26,6 +26,10 @@ export type GenerateInitialTripPlanOutput = z.infer<
   typeof GenerateInitialTripPlanOutputSchema
 >;
 
+const FlowInputSchema = GenerateInitialTripPlanInputSchema.extend({
+  currentDate: z.string().describe("The current date in YYYY-MM-DD format."),
+});
+
 export async function generateInitialTripPlan(
   input: GenerateInitialTripPlanInput
 ): Promise<GenerateInitialTripPlanOutput> {
@@ -36,10 +40,6 @@ export async function generateInitialTripPlan(
     currentDate,
   });
 }
-
-const FlowInputSchema = GenerateInitialTripPlanInputSchema.extend({
-  currentDate: z.string().describe("The current date in YYYY-MM-DD format."),
-});
 
 const prompt = ai.definePrompt({
   name: 'generateInitialTripPlanPrompt',
