@@ -38,7 +38,7 @@ export default function HomePage() {
 
     setIsLoading(false);
 
-    if (error && !plan) { // This is a hard failure.
+    if (error || !plan) {
       toast({
         title: "Error Generating Plan",
         description: error,
@@ -46,13 +46,6 @@ export default function HomePage() {
       });
       setShowResults(false);
     } else {
-      if (error) { // This is a soft failure (e.g. refinement failed).
-        toast({
-          title: "Showing Creative Plan",
-          description: error,
-          variant: "default",
-        });
-      }
       setItinerary(plan);
       setConversation([{role: 'assistant', content: "Here is your initial plan! How would you like to refine it?"}]);
     }
