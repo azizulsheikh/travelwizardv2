@@ -37,9 +37,8 @@ Follow these instructions:
     *   You **must** call the \`flightSearch\` tool using the extracted itinerary details. Assume 1 adult passenger.
     *   You **must** call the \`hotelSearch\` tool using the destination city's IATA code.
 3.  **Integrate Results**:
-    *   Take the results from the tool calls and integrate them into the \`flightDetails\` and \`hotelDetails\` sections of the itinerary.
-    *   For the hotel, you **must pick the first hotel** from the search results list.
-    *   For the hotel booking URL, you **must create a Booking.com search URL** in this exact format: \`https://www.booking.com/searchresults.html?ss=THE_HOTEL_NAME\`, replacing "THE_HOTEL_NAME" with the actual name of the hotel.
+    *   Take the results from the tool calls and integrate them directly into the \`flightDetails\` and \`hotelDetails\` sections of the itinerary.
+    *   For the hotel, you **must pick the first hotel** from the search results list. The \`hotelSearch\` tool provides the \`hotelName\`, \`estimatedCost\`, and a \`bookingUrl\`. Use all of these fields.
 4.  **Return Updated Itinerary**: Return the entire itinerary as a single, valid JSON object, updated with the new information. The final output must conform to the provided JSON schema. **Do not modify the day-to-day itinerary activities.**
 
 Existing Itinerary:

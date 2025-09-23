@@ -59,7 +59,7 @@ export default function HotelDetailsCard({ hotelDetails }: HotelDetailsCardProps
         <CardFooter className="flex justify-center">
             <Button onClick={handleAnimation} disabled={isAnimating || !hotelDetails.bookingUrl}>
                 <Building className={`mr-2 ${isAnimating ? 'fly-away' : ''}`} />
-                View on Google
+                Book Hotel
             </Button>
         </CardFooter>
       )}
