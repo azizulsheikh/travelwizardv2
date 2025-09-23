@@ -24,15 +24,15 @@ export default function IntrospectionSidebar({ onRefine, isLoading }: Introspect
   };
   
   return (
-    <Card className="h-full flex flex-col bg-white/70 dark:bg-black/50 backdrop-blur-sm">
+    <Card className="max-h-[80vh] flex flex-col bg-white/70 dark:bg-black/50 backdrop-blur-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-card-foreground">
           <Bot />
           Refine Your Plan
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col h-full">
-        <div className="flex-grow space-y-4 overflow-y-auto">
+      <CardContent className="flex-grow flex flex-col min-h-0">
+        <div className="flex-grow space-y-4 overflow-y-auto pr-2">
           {messages.map((msg, index) => (
             <div key={index} className={`flex items-start gap-2 ${msg.role === 'user' ? 'justify-end' : ''}`}>
               {msg.role === 'assistant' && <Bot className="w-5 h-5 text-primary" />}
