@@ -20,7 +20,7 @@ export default function ResultsView({
 }: ResultsViewProps) {
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       <div className="lg:col-span-2 relative p-6 rounded-2xl shadow-lg bg-black/30 backdrop-blur-md">
         {isLoading && !itinerary ? <ItinerarySkeleton isInitial={false} /> : (itinerary ? <ItineraryDisplay itinerary={itinerary} /> : <ItinerarySkeleton isInitial={true} />)}
       </div>
