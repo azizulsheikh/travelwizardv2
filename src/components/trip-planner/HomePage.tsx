@@ -27,6 +27,7 @@ export default function HomePage() {
     
     setIsLoading(true);
     setItinerary(null);
+    setMessages([]); // Clear previous messages
     
     const userMessage: ConversationTurn = { role: 'user', content: prompt };
     setMessages([userMessage]);
@@ -35,26 +36,11 @@ export default function HomePage() {
   };
 
   const handleRefine = async (refinementPrompt: string) => {
-    if (!itinerary) { // This is a new conversation
-      const newUserMessage: ConversationTurn = { role: 'user', content: refinementPrompt };
-      const newMessages = [...messages, newUserMessage];
-      setMessages(newMessages);
-      setIsLoading(true);
-      await processConversation(newMessages);
-    } else { // This is refining an existing plan
-        setIsRefining(true);
-        // The old refine-itinerary flow can be used here if needed
-        // For now, we just update the messages
-        const newUserMessage: ConversationTurn = { role: 'user', content: refinementPrompt };
-        const newMessages = [...messages, newUserMessage];
-        setMessages(newMessages);
-
-        // Placeholder for future refinement logic
-        setTimeout(() => {
-          setMessages([...newMessages, { role: 'model', content: "Refinement functionality is being updated. For now, you can start a new plan." }]);
-          setIsRefining(false);
-        }, 1000);
-    }
+    const newUserMessage: ConversationTurn = { role: 'user', content: refinementPrompt };
+    const newMessages = [...messages, newUserMessage];
+    setMessages(newMessages);
+    setIsLoading(true);
+    await processConversation(newMessages);
   };
 
   const processConversation = async (currentMessages: ConversationTurn[]) => {
@@ -70,8 +56,9 @@ export default function HomePage() {
       });
       setMessages(m => [...m, { role: 'model', content: "I'm sorry, I encountered an error. Please try again." }]);
     } else if (plan) {
+      setMessages(m => [...m, { role: 'model', content: `Great, I've got all the details! Here is the trip plan I've put together for you.` }]);
       setItinerary(plan);
-      setMessages(m => [...m, { role: 'model', content: `Here is the trip plan for ${plan.tripTitle}!` }]);
+      setIsRefining(true);
       
       const { plan: refinedPlan, error: refineError } = await handleRefineWithApi(plan);
       setIsRefining(false);
@@ -110,7 +97,8 @@ export default function HomePage() {
         {showConversation && (
           <ResultsView 
             itinerary={itinerary}
-            isLoading={isLoading || isRefining}
+            isLoading={isLoading}
+            isRefining={isRefining}
             onRefine={handleRefine}
             messages={messages}
           />

@@ -10,17 +10,21 @@ import ItinerarySkeleton from './ItinerarySkeleton';
 interface ResultsViewProps {
   itinerary: Itinerary | null;
   isLoading: boolean;
+  isRefining: boolean;
   onRefine: (followUp: string) => void;
   messages: ConversationTurn[];
 }
 
 export default function ResultsView({ 
   itinerary, 
-  isLoading, 
+  isLoading,
+  isRefining,
   onRefine,
   messages,
 }: ResultsViewProps) {
-  const showImage = isLoading || itinerary;
+  
+  const showImage = isLoading || itinerary || isRefining;
+  const showItinerary = itinerary && !isRefining;
 
   return (
     <div className="container mx-auto p-4 md:p-8 flex-grow">
@@ -40,20 +44,19 @@ export default function ResultsView({
             </div>
           )}
           <div className="relative">
-            {isLoading && !itinerary ? (
-              <LoadingDisplay />
-            ) : itinerary ? (
+            {showItinerary ? (
               <ItineraryDisplay itinerary={itinerary} isLoading={isLoading} />
+            ) : isRefining ? (
+              <LoadingDisplay />
             ) : (
-                // Show a skeleton while waiting for the first plan
-                <div className="text-center p-8">
-                    <ItinerarySkeleton isInitial={true} />
-                </div>
+              <div className="text-center p-8">
+                {/* A placeholder for conversation, the skeleton is shown via the sidebar loading state */}
+              </div>
             )}
           </div>
         </div>
         <div className="hidden lg:block lg:w-1/4">
-          <IntrospectionSidebar onRefine={onRefine} isLoading={isLoading} messages={messages} />
+          <IntrospectionSidebar onRefine={onRefine} isLoading={isLoading || isRefining} messages={messages} />
         </div>
       </div>
     </div>
