@@ -39,7 +39,7 @@ const prompt = ai.definePrompt({
 
 Your primary goal is to generate a creative, engaging, and plausible travel itinerary.
 
-1.  **Extract Key Details**: From the user's request, identify the origin city, destination city, departure date, and return date. Determine the 3-letter IATA codes for the origin and destination cities (e.g., "LHR" for London, "CDG" for Paris). **If any dates are in the past or not specified, you MUST use today's date for the departure date and a suitable future date for the return.**
+1.  **Extract Key Details**: From the user's request, identify the origin city, destination city, departure date, and return date. Determine the 3-letter IATA codes for the origin and destination cities (e.g., "LHR" for London, "CDG" for Paris). **If dates are not specified or are in the past, you MUST use plausible future dates, assuming the current year is 2024. For example, if today is June 5th, 2024 and the user asks for "a trip next week", the departure date should be around June 12th, 2024.**
 2.  **Invent Flight and Hotel Details**: Create plausible, fictional details for flights (airline, flight number) and a hotel (name).
 3.  **Construct Google URLs**:
     *   **Flight URL**: You MUST create a Google Flights search URL. The format MUST be exactly: \`https://www.google.com/travel/flights/search?q=flights from {originCityIata} to {destinationCityIata} on {departureDate} returning {returnDate}\`. Replace the bracketed values.
