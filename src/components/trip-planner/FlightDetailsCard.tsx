@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Plane } from "lucide-react";
 import type { FlightDetails } from "@/lib/types";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
 import { Button } from '@/components/ui/button';
 
 interface FlightDetailsCardProps {
@@ -13,10 +12,13 @@ interface FlightDetailsCardProps {
 
 function formatCost(cost: any) {
     if (!cost) return 'N/A';
-    if (typeof cost === 'object' && cost.value && cost.currency) {
-        return `${cost.value} ${cost.currency}`;
+    if (typeof cost === 'object' && cost.currency && cost.value) {
+        return `${new Intl.NumberFormat('en-US', { style: 'currency', currency: cost.currency }).format(cost.value)}`;
     }
-    return cost.toString();
+    if (typeof cost === 'string' || typeof cost === 'number') {
+        return cost.toString();
+    }
+    return 'N/A';
 }
 
 export default function FlightDetailsCard({ flightDetails }: FlightDetailsCardProps) {
@@ -59,7 +61,7 @@ export default function FlightDetailsCard({ flightDetails }: FlightDetailsCardPr
             <CardFooter className="flex justify-center">
                  <Button onClick={handleAnimation} disabled={isAnimating}>
                     <Plane className={`mr-2 ${isAnimating ? 'fly-away' : ''}`} />
-                    View on Google Flights
+                    View on Skyscanner
                 </Button>
             </CardFooter>
         </Card>

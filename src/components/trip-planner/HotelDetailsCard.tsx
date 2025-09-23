@@ -12,10 +12,13 @@ interface HotelDetailsCardProps {
 
 function formatCost(cost: any) {
     if (!cost) return 'N/A';
-    if (typeof cost === 'object' && cost.value && cost.currency) {
-        return `${cost.value} ${cost.currency}`;
+    if (typeof cost === 'object' && cost.currency && cost.value) {
+        return `${new Intl.NumberFormat('en-US', { style: 'currency', currency: cost.currency }).format(cost.value)}`;
     }
-    return cost.toString();
+     if (typeof cost === 'string' || typeof cost === 'number') {
+        return cost.toString();
+    }
+    return 'N/A';
 }
 
 export default function HotelDetailsCard({ hotelDetails }: HotelDetailsCardProps) {
@@ -56,7 +59,7 @@ export default function HotelDetailsCard({ hotelDetails }: HotelDetailsCardProps
         <CardFooter className="flex justify-center">
             <Button onClick={handleAnimation} disabled={isAnimating || !hotelDetails.bookingUrl}>
                 <Building className={`mr-2 ${isAnimating ? 'fly-away' : ''}`} />
-                View Hotel
+                View on Booking.com
             </Button>
         </CardFooter>
       )}
