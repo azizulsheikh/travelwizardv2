@@ -2,7 +2,7 @@ export interface Activity {
     title: string;
     startTime: string;
     endTime: string;
-    description: string;
+    description?: string;
     type: 'transfer' | 'food' | 'activity' | 'lodging' | 'free-time';
     imageQuery?: string;
     lodgingDetails?: {
@@ -49,9 +49,4 @@ export interface TripDetails {
     destinationCity?: string;
     departureDate?: string;
     returnDate?: string;
-}
-
-export interface ConversationTurn {
-    role: 'user' | 'model';
-    content: string;
 }

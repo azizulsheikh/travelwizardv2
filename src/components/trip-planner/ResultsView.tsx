@@ -1,63 +1,31 @@
 'use client';
 
-import type { Itinerary, ConversationTurn } from '@/lib/types';
+import type { Itinerary } from '@/lib/types';
 import ItineraryDisplay from './ItineraryDisplay';
-import Image from 'next/image';
-import LoadingDisplay from './LoadingDisplay';
-import IntrospectionSidebar from './IntrospectionSidebar';
 import ItinerarySkeleton from './ItinerarySkeleton';
+import ChatSidebar, { type Message } from './ChatSidebar';
 
 interface ResultsViewProps {
   itinerary: Itinerary | null;
   isLoading: boolean;
-  isRefining: boolean;
   onRefine: (followUp: string) => void;
-  messages: ConversationTurn[];
+  conversation: Message[];
 }
 
 export default function ResultsView({ 
   itinerary, 
   isLoading,
-  isRefining,
   onRefine,
-  messages,
+  conversation,
 }: ResultsViewProps) {
-  
-  const showItineraryContent = itinerary && !isLoading && !isRefining;
-  const showLoading = isLoading || isRefining;
 
   return (
-    <div className="container mx-auto p-4 md:p-8 flex-grow">
-      <div className="flex gap-8 h-full">
-        <div className="w-full lg:w-3/4 relative p-6 rounded-2xl shadow-lg">
-          {(showItineraryContent || showLoading) && (
-            <div className="absolute inset-0">
-              <Image
-                src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?q=80&w=2070&auto=format&fit=crop"
-                alt="Compass on a map"
-                fill
-                style={{ objectFit: 'cover' }}
-                className="rounded-2xl"
-                priority
-              />
-              <div className="absolute inset-0 bg-black/50 rounded-2xl"></div>
-            </div>
-          )}
-          <div className="relative">
-            {showItineraryContent ? (
-              <ItineraryDisplay itinerary={itinerary} isLoading={isLoading} />
-            ) : showLoading ? (
-              <LoadingDisplay />
-            ) : (
-              <div className="text-center p-8">
-                {/* A placeholder for conversation, the skeleton is shown via the sidebar loading state */}
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="hidden lg:block lg:w-1/4">
-          <IntrospectionSidebar onRefine={onRefine} isLoading={isLoading || isRefining} messages={messages} />
-        </div>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
+      <div className="lg:col-span-2 relative p-6 rounded-2xl shadow-lg bg-black/30 backdrop-blur-md">
+        {isLoading && !itinerary ? <ItinerarySkeleton isInitial={false} /> : (itinerary ? <ItineraryDisplay itinerary={itinerary} /> : <ItinerarySkeleton isInitial={true} />)}
+      </div>
+      <div className="lg:col-span-1">
+         <ChatSidebar messages={conversation} onSendMessage={onRefine} isLoading={isLoading} />
       </div>
     </div>
   );
