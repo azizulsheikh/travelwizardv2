@@ -9,6 +9,8 @@ const getAmadeusClient = () => {
     return amadeus;
   }
   if (!process.env.AMADEUS_API_KEY || !process.env.AMADEUS_API_SECRET) {
+    // You should fill these in in the .env file in the file explorer on the left.
+    // You can get them from https://developers.amadeus.com/
     throw new Error('Amadeus API key and secret are required.');
   }
   amadeus = new Amadeus({
@@ -42,16 +44,23 @@ export async function searchFlights(search: {
       const departure = `${firstSegment.departure.iataCode} at ${firstSegment.departure.at}`;
       const arrival = `${firstItinerary.segments[firstItinerary.segments.length - 1].arrival.iataCode} at ${firstItinerary.segments[firstItinerary.segments.length - 1].arrival.at}`;
       
-      const googleFlightsUrl = new URL('https://www.google.com/travel/flights');
-      googleFlightsUrl.searchParams.set('q', `Flights from ${search.originLocationCode} to ${search.destinationLocationCode} on ${search.departureDate}`);
-
+      const skyscannerUrl = new URL('https://www.skyscanner.com/transport/flights/');
+      const from = search.originLocationCode.toLowerCase();
+      const to = search.destinationLocationCode.toLowerCase();
+      const departDate = search.departureDate.substring(2).replace(/-/g, '');
+      const returnDate = search.returnDate ? search.returnDate.substring(2).replace(/-/g, '') : '';
+      skyscannerUrl.pathname += `${from}/${to}/${departDate}/${returnDate}`;
+      
       return {
         airline: airline,
         flightNumber: flightNumber,
         departure: departure,
         arrival: arrival,
-        estimatedCost: flight.price.total,
-        bookingUrl: googleFlightsUrl.toString(),
+        estimatedCost: {
+          currency: flight.price.currency,
+          value: flight.price.total,
+        },
+        bookingUrl: skyscannerUrl.toString(),
       };
     }
     return { error: 'No flights found' };
@@ -70,7 +79,10 @@ export async function searchHotels(search: { cityCode: string }) {
       return response.data.slice(0, 5).map((offer: any) => ({
         hotelName: offer.hotel.name,
         // Assuming the first offer has a price
-        estimatedCost: offer.offers[0].price.total,
+        estimatedCost: {
+            currency: offer.offers[0].price.currency,
+            value: offer.offers[0].price.total
+        },
       }));
     }
     return { error: 'No hotels found' };

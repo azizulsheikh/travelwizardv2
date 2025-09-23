@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Itinerary } from '@/lib/types';
-import { handleGeneratePlan, handleRefineItinerary } from '@/app/actions';
+import { handleGeneratePlan, handleRefineItinerary, handleRefineWithApi } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import HeroSection from './HeroSection';
 import ResultsView from './ResultsView';
@@ -28,10 +28,9 @@ export default function HomePage() {
     setItinerary(null);
     
     const { plan, error } = await handleGeneratePlan(prompt);
-    
-    setIsLoading(false);
 
     if (error || !plan) {
+      setIsLoading(false);
       toast({
         title: "Error Generating Plan",
         description: error || "An unknown error occurred.",
@@ -40,6 +39,18 @@ export default function HomePage() {
       setItinerary(null);
     } else {
       setItinerary(plan);
+      // Now, refine this plan with live data in the background
+      const { plan: refinedPlan, error: refineError } = await handleRefineWithApi(plan);
+      setIsLoading(false);
+      if (refineError || !refinedPlan) {
+        toast({
+          title: "Could not fetch travel details",
+          description: "We couldn't find real-time flight or hotel data, but the itinerary is ready!",
+        });
+        setItinerary(plan); // Keep the original creative plan
+      } else {
+        setItinerary(refinedPlan);
+      }
     }
   };
 

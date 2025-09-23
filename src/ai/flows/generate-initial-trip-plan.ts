@@ -37,23 +37,12 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateInitialTripPlanOutputSchema},
   prompt: `You are an expert travel agent. Create a detailed travel itinerary based on the user's request.
 
-Your primary goal is to generate a creative, engaging, and plausible travel itinerary that includes plausible flight and hotel details.
+Your primary goal is to generate a creative, engaging, and plausible travel itinerary.
 
 1.  **Extract Key Details**: From the user's request, identify the origin city, destination city, departure date, and return date. Determine the 3-letter IATA codes for the origin and destination cities (e.g., "LHR" for London, "CDG" for Paris).
-2.  **Generate Flight Details**:
-    *   Invent a plausible airline and flight number (e.g., "United UA 456").
-    *   Invent plausible departure and arrival times.
-    *   Invent an estimated cost.
-    *   Construct a Skyscanner URL in this exact format: \`https://www.skyscanner.com/transport/flights/[ORIGIN_IATA]/[DESTINATION_IATA]/\`. Replace the bracketed placeholders with the extracted IATA codes.
-    *   Populate the \`flightDetails\` object with all this information.
-3.  **Generate Hotel Details**:
-    *   Invent a plausible hotel name at the destination.
-    *   Invent an estimated cost per night.
-    *   Construct a Booking.com search URL for booking the hotel in this exact format: \`https://www.booking.com/searchresults.html?ss=[DESTINATION_CITY]\`. Replace the bracketed placeholder with the destination city name.
-    *   Populate the \`hotelDetails\` object with all this information.
-4.  **Construct Itinerary**: Build a day-by-day itinerary with a theme for each day and a list of activities. For each activity, provide a title, start time, end time, a brief description, and a type (e.g., food, activity, free-time).
-5.  **Image Queries**: For each activity, generate a concise, descriptive search term for Unsplash (e.g., "Eiffel Tower at night") that can be used to fetch a relevant image.
-6.  **Output JSON**: Ensure the entire response is a single, valid JSON object that adheres to the output schema.
+2.  **Construct Itinerary**: Build a day-by-day itinerary with a theme for each day and a list of activities. For each activity, provide a title, start time, end time, a brief description, and a type (e.g., food, activity, free-time).
+3.  **Image Queries**: For each activity, generate a concise, descriptive search term for Unsplash (e.g., "Eiffel Tower at night") that can be used to fetch a relevant image.
+4.  **Output JSON**: Ensure the entire response is a single, valid JSON object that adheres to the output schema.
 `,
 });
 

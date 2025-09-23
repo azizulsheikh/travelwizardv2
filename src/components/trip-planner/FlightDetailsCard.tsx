@@ -58,12 +58,14 @@ export default function FlightDetailsCard({ flightDetails }: FlightDetailsCardPr
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="flex justify-center">
-                 <Button onClick={handleAnimation} disabled={isAnimating}>
-                    <Plane className={`mr-2 ${isAnimating ? 'fly-away' : ''}`} />
-                    View on Skyscanner
-                </Button>
-            </CardFooter>
+            {flightDetails.bookingUrl && (
+                <CardFooter className="flex justify-center">
+                    <Button onClick={handleAnimation} disabled={isAnimating}>
+                        <Plane className={`mr-2 ${isAnimating ? 'fly-away' : ''}`} />
+                        View on Skyscanner
+                    </Button>
+                </CardFooter>
+            )}
         </Card>
     );
 }
