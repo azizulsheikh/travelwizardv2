@@ -1,5 +1,6 @@
 'use server';
 
+import { conversationalTripPlanner, type ConversationTurn } from '@/ai/flows/conversational-trip-planner';
 import { extractTripDetails } from '@/ai/flows/extract-trip-details';
 import { generateInitialTripPlan } from '@/ai/flows/generate-initial-trip-plan';
 import { refineGeneratedItinerary } from '@/ai/flows/refine-generated-itinerary';
@@ -57,5 +58,22 @@ export async function handleRefineItinerary(itinerary: Itinerary, prompt: string
   } catch (e) {
     console.error(e);
     return { plan: null, error: 'Failed to refine trip plan. Please try again.' };
+  }
+}
+
+
+export async function handleConversation(messages: ConversationTurn[]): Promise<{ response: string; plan: Itinerary | null; error: string | null; }> {
+  try {
+    const result = await conversationalTripPlanner({ conversation: messages });
+    
+    // Check if the result is a plan (Itinerary) or a string response
+    if (result && typeof result === 'object' && 'tripTitle' in result) {
+      return { response: '', plan: result as Itinerary, error: null };
+    }
+    
+    return { response: result as string, plan: null, error: null };
+  } catch (e) {
+    console.error(e);
+    return { response: '', plan: null, error: 'An error occurred during the conversation.' };
   }
 }

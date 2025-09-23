@@ -50,3 +50,8 @@ export interface TripDetails {
     departureDate?: string;
     returnDate?: string;
 }
+
+export interface ConversationTurn {
+    role: 'user' | 'model';
+    content: string;
+}

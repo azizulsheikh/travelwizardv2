@@ -1,46 +1,29 @@
 'use client';
 
-import type { Itinerary, TripDetails } from '@/lib/types';
+import type { Itinerary, ConversationTurn } from '@/lib/types';
 import ItineraryDisplay from './ItineraryDisplay';
 import Image from 'next/image';
 import LoadingDisplay from './LoadingDisplay';
 import IntrospectionSidebar from './IntrospectionSidebar';
-import TripDetailsForm from './TripDetailsForm';
+import ItinerarySkeleton from './ItinerarySkeleton';
 
 interface ResultsViewProps {
   itinerary: Itinerary | null;
   isLoading: boolean;
   onRefine: (followUp: string) => void;
-  showDetailsForm: boolean;
-  tripDetails: TripDetails | null;
-  initialPrompt: string;
-  onDetailsSubmit: (details: TripDetails) => void;
-  onDetailsClose: () => void;
+  messages: ConversationTurn[];
 }
 
 export default function ResultsView({ 
   itinerary, 
   isLoading, 
   onRefine,
-  showDetailsForm,
-  tripDetails,
-  initialPrompt,
-  onDetailsSubmit,
-  onDetailsClose
+  messages,
 }: ResultsViewProps) {
-  const showImage = isLoading || itinerary || showDetailsForm;
+  const showImage = isLoading || itinerary;
 
   return (
     <div className="container mx-auto p-4 md:p-8 flex-grow">
-      {tripDetails && (
-        <TripDetailsForm
-          isOpen={showDetailsForm}
-          onClose={onDetailsClose}
-          onSubmit={onDetailsSubmit}
-          initialDetails={tripDetails}
-          initialPrompt={initialPrompt}
-        />
-       )}
       <div className="flex gap-8 h-full">
         <div className="w-full lg:w-3/4 relative p-6 rounded-2xl shadow-lg">
           {showImage && (
@@ -61,11 +44,16 @@ export default function ResultsView({
               <LoadingDisplay />
             ) : itinerary ? (
               <ItineraryDisplay itinerary={itinerary} isLoading={isLoading} />
-            ) : null}
+            ) : (
+                // Show a skeleton while waiting for the first plan
+                <div className="text-center p-8">
+                    <ItinerarySkeleton isInitial={true} />
+                </div>
+            )}
           </div>
         </div>
         <div className="hidden lg:block lg:w-1/4">
-          {itinerary && <IntrospectionSidebar onRefine={onRefine} isLoading={isLoading} />}
+          <IntrospectionSidebar onRefine={onRefine} isLoading={isLoading} messages={messages} />
         </div>
       </div>
     </div>

@@ -1,24 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Bot, Send, User } from 'lucide-react';
-import ItinerarySkeleton from './ItinerarySkeleton';
+import { Bot, Send, User, Loader2 } from 'lucide-react';
+import type { ConversationTurn } from '@/lib/types';
 
 interface IntrospectionSidebarProps {
   onRefine: (prompt: string) => void;
   isLoading: boolean;
+  messages: ConversationTurn[];
 }
 
-export default function IntrospectionSidebar({ onRefine, isLoading }: IntrospectionSidebarProps) {
+export default function IntrospectionSidebar({ onRefine, isLoading, messages }: IntrospectionSidebarProps) {
   const [prompt, setPrompt] = useState('');
-  const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isLoading]);
+  
   const handleRefine = () => {
-    if (!prompt.trim()) return;
-    setMessages([...messages, { role: 'user', content: prompt }]);
+    if (!prompt.trim() || isLoading) return;
     onRefine(prompt);
     setPrompt('');
   };
@@ -28,28 +34,36 @@ export default function IntrospectionSidebar({ onRefine, isLoading }: Introspect
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-card-foreground">
           <Bot />
-          Refine Your Plan
+          Trip Planner
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col min-h-0">
-        <div className="flex-grow space-y-4 overflow-y-auto pr-2">
+        <div ref={scrollRef} className="flex-grow space-y-4 overflow-y-auto pr-2 mb-4">
           {messages.map((msg, index) => (
-            <div key={index} className={`flex items-start gap-2 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-              {msg.role === 'assistant' && <Bot className="w-5 h-5 text-primary" />}
-              <div className={`p-3 rounded-lg max-w-xs ${msg.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-                <p className="text-sm">{msg.content}</p>
+            <div key={index} className={`flex items-start gap-2.5 ${msg.role === 'user' ? 'justify-end' : ''}`}>
+              {msg.role === 'model' && <Bot className="w-6 h-6 text-primary flex-shrink-0" />}
+              <div className={`p-3 rounded-lg max-w-xs break-words text-sm ${msg.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                <p>{msg.content}</p>
               </div>
-              {msg.role === 'user' && <User className="w-5 h-5" />}
+              {msg.role === 'user' && <User className="w-6 h-6 flex-shrink-0" />}
             </div>
           ))}
-           {isLoading && messages.length > 0 && <ItinerarySkeleton isInitial={false} />}
+           {isLoading && (
+            <div className="flex items-start gap-2.5">
+                <Bot className="w-6 h-6 text-primary flex-shrink-0" />
+                <div className="p-3 rounded-lg bg-muted">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                </div>
+            </div>
+           )}
         </div>
-        <div className="mt-4 flex gap-2">
+        <div className="mt-auto flex gap-2 pt-2 border-t">
           <Textarea
-            placeholder="e.g., 'Make it a 7-day trip'"
+            placeholder="Type your message..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             className="text-base"
+            disabled={isLoading}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -57,7 +71,7 @@ export default function IntrospectionSidebar({ onRefine, isLoading }: Introspect
               }
             }}
           />
-          <Button onClick={handleRefine} disabled={isLoading}>
+          <Button onClick={handleRefine} disabled={isLoading || !prompt.trim()}>
             <Send />
           </Button>
         </div>
