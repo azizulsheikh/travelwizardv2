@@ -37,12 +37,13 @@ export async function generateInitialTripPlan(
   });
 }
 
+const FlowInputSchema = GenerateInitialTripPlanInputSchema.extend({
+  currentDate: z.string().describe("The current date in YYYY-MM-DD format."),
+});
+
 const prompt = ai.definePrompt({
   name: 'generateInitialTripPlanPrompt',
-  input: {schema: z.object({
-    tripDescription: GenerateInitialTripPlanInputSchema.shape.tripDescription,
-    currentDate: z.string().describe("The current date in YYYY-MM-DD format."),
-  })},
+  input: {schema: FlowInputSchema},
   output: {schema: GenerateInitialTripPlanOutputSchema},
   prompt: `You are an expert travel agent. Create a detailed travel itinerary based on the user's request.
 
@@ -57,10 +58,6 @@ Your primary goal is to generate a creative, engaging, and plausible travel itin
 5.  **Image Queries**: For each activity, generate a concise, descriptive search term for Unsplash (e.g., "Eiffel Tower at night") that can be used to fetch a relevant image.
 6.  **Output JSON**: Ensure the entire response is a single, valid JSON object that adheres to the output schema.
 `,
-});
-
-const FlowInputSchema = GenerateInitialTripPlanInputSchema.extend({
-  currentDate: z.string().describe("The current date in YYYY-MM-DD format."),
 });
 
 const generateInitialTripPlanFlow = ai.defineFlow(
