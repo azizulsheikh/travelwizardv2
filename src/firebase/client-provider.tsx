@@ -61,8 +61,8 @@ export function initializeFirebase() {
 
   isSupported().then((supported) => {
     if (supported) {
-      getAnalytics(app);
-      getPerformance(app);
+      // getAnalytics(app);
+      // getPerformance(app);
     }
   });
 
