@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { Suspense } from 'react';
+import Header from '@/components/trip-planner/Header';
 
 export const metadata: Metadata = {
   title: 'TripWizard AI',
@@ -24,7 +25,15 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <Suspense>
           <FirebaseClientProvider>
-            {children}
+            <div className="relative flex flex-col min-h-screen bg-background">
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute inset-0 bg-black opacity-50"></div>
+                </div>
+                <div className="relative z-10 flex flex-col flex-grow">
+                    <Header />
+                    {children}
+                </div>
+            </div>
           </FirebaseClientProvider>
         </Suspense>
         <Toaster />

@@ -9,7 +9,6 @@ import ResultsView from './ResultsView';
 import Image from 'next/image';
 import LoadingDisplay from './LoadingDisplay';
 import { Message } from './ChatSidebar';
-import Header from './Header';
 import { useAuth } from '@/firebase';
 
 export default function HomePage() {
@@ -17,7 +16,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [conversation, setConversation] = useState<Message[]>([]);
-  const { user, loading } = useAuth();
+  const { user, loading: userLoading } = useAuth();
 
   const { toast } = useToast();
 
@@ -78,20 +77,16 @@ export default function HomePage() {
 
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-background">
-       <div className="absolute inset-0 z-0">
-        <Image
+    <>
+      <Image
           src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop"
           alt="Tropical beach destination"
           fill
           style={{ objectFit: 'cover' }}
           priority
+          className="z-0"
         />
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-      </div>
-      <div className="relative z-10 flex flex-col flex-grow">
-        <Header />
-        {!showResults && <HeroSection onSubmit={handleInitialSubmit} user={user} loading={loading} />}
+        {!showResults && <HeroSection onSubmit={handleInitialSubmit} user={user} loading={userLoading} />}
         
         {showResults && (
           <div className="container mx-auto p-4 md:p-8 flex-grow">
@@ -107,7 +102,6 @@ export default function HomePage() {
             ) : null}
           </div>
         )}
-      </div>
-    </div>
+    </>
   );
 }
