@@ -3,18 +3,18 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/firebase';
 import Link from 'next/link';
-import Header from './Header';
 import { Sparkles } from 'lucide-react';
+import type { User } from 'firebase/auth';
 
 interface HeroSectionProps {
   onSubmit: (prompt: string) => void;
+  user: User | null;
+  loading: boolean;
 }
 
-export default function HeroSection({ onSubmit }: HeroSectionProps) {
+export default function HeroSection({ onSubmit, user, loading }: HeroSectionProps) {
   const [prompt, setPrompt] = useState('');
-  const { user, loading } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +23,6 @@ export default function HeroSection({ onSubmit }: HeroSectionProps) {
 
   return (
     <section className="relative text-white">
-      <Header />
       <div className="container mx-auto px-6 py-32 text-center relative z-10">
         <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-4 font-headline">
           Just imagine your trip.

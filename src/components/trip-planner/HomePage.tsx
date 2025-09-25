@@ -9,12 +9,15 @@ import ResultsView from './ResultsView';
 import Image from 'next/image';
 import LoadingDisplay from './LoadingDisplay';
 import { Message } from './ChatSidebar';
+import Header from './Header';
+import { useAuth } from '@/firebase';
 
 export default function HomePage() {
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [conversation, setConversation] = useState<Message[]>([]);
+  const { user, loading } = useAuth();
 
   const { toast } = useToast();
 
@@ -87,7 +90,8 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black opacity-50"></div>
       </div>
       <div className="relative z-10 flex flex-col flex-grow">
-        {!showResults && <HeroSection onSubmit={handleInitialSubmit} />}
+        <Header />
+        {!showResults && <HeroSection onSubmit={handleInitialSubmit} loading={loading} user={user} />}
         
         {showResults && (
           <div className="container mx-auto p-4 md:p-8 flex-grow">
