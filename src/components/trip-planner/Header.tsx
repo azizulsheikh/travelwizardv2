@@ -18,7 +18,7 @@ function UserProfile() {
   if (!user) {
     return (
       <Link href="/login">
-        <Button variant="outline" className="text-white bg-transparent border-white/50 hover:bg-white/10 hover:text-white">
+        <Button variant="secondary" className="bg-white/90 text-primary hover:bg-white">
           <LogIn className="mr-2 h-4 w-4" />
           Login
         </Button>
@@ -56,7 +56,7 @@ function UserProfile() {
   );
 }
 
-export default function Header() {
+export default function Header({ showUserProfile = true }: { showUserProfile?: boolean }) {
   return (
     <header className="bg-transparent text-primary-foreground sticky top-0 z-20">
       <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -70,7 +70,7 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex-1 flex justify-end">
-          <UserProfile />
+          {showUserProfile && <UserProfile />}
         </div>
       </nav>
     </header>
