@@ -63,9 +63,9 @@ export default function Header() {
         <div className="flex-1"></div>
         <div className="flex-1 flex items-center justify-center">
           <Link href="/" className="flex items-center gap-2 text-2xl font-bold group">
-            <span className="font-headline transition-transform duration-300 group-hover:scale-105 text-animated-gradient flex items-center gap-2">
-              <Wand2 className="group-hover:animate-pulse" />
-              TripWizard AI
+            <span className="font-headline transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-105 flex items-center gap-2">
+              <Wand2 className="transition-transform duration-300 group-hover:rotate-12" />
+              <span className="text-animated-gradient">TripWizard AI</span>
             </span>
           </Link>
         </div>
