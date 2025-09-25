@@ -10,9 +10,10 @@ export async function handleGeneratePlan(
   try {
     const creativePlan = await generateInitialTripPlan({ tripDescription: prompt });
     return { plan: creativePlan as Itinerary, error: null };
-  } catch (e) {
+  } catch (e: any) {
     console.error('Initial plan generation failed:', e);
-    return { plan: null, error: 'An error occurred during plan generation.' };
+    const errorMessage = e.message || 'An error occurred during plan generation.';
+    return { plan: null, error: errorMessage };
   }
 }
 

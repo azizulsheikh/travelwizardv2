@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/firebase';
+import Link from 'next/link';
 
 interface HeroSectionProps {
   onSubmit: (prompt: string) => void;
@@ -10,10 +12,33 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onSubmit }: HeroSectionProps) {
   const [prompt, setPrompt] = useState('');
+  const { user, loading } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(prompt);
+    if (user) {
+      onSubmit(prompt);
+    }
+  };
+
+  const renderButton = () => {
+    if (loading) {
+      return <Button type="button" disabled className="rounded-full px-8 py-3 text-base h-auto">Loading...</Button>;
+    }
+    if (!user) {
+      return (
+        <Link href="/login">
+          <Button type="button" className="rounded-full px-8 py-3 text-base h-auto bg-accent text-accent-foreground hover:bg-accent/90">
+            Login for Premium Generation
+          </Button>
+        </Link>
+      );
+    }
+    return (
+      <Button type="submit" className="rounded-full px-8 py-3 text-base h-auto">
+        Plan Trip
+      </Button>
+    );
   };
 
   return (
@@ -34,10 +59,9 @@ export default function HeroSection({ onSubmit }: HeroSectionProps) {
               className="w-full bg-transparent px-6 py-3 text-card-foreground focus:outline-none border-none focus-visible:ring-0 text-base"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
+              disabled={!user && !loading}
             />
-            <Button type="submit" className="rounded-full px-8 py-3 text-base h-auto">
-              Plan Trip
-            </Button>
+            {renderButton()}
           </form>
         </div>
       </div>
