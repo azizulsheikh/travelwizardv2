@@ -1,7 +1,6 @@
 'use server';
 
 import { generateInitialTripPlan } from '@/ai/flows/generate-initial-trip-plan';
-import { refineGeneratedItinerary } from '@/ai/flows/refine-generated-itinerary';
 import type { Itinerary } from '@/lib/types';
 import { refineItinerary } from '@/ai/flows/refine-itinerary';
 
