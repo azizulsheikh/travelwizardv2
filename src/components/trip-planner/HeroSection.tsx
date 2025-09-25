@@ -5,13 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/firebase';
 import Link from 'next/link';
+import Header from './Header';
+import { Sparkles } from 'lucide-react';
 
 interface HeroSectionProps {
   onSubmit: (prompt: string) => void;
-  children: React.ReactNode;
 }
 
-export default function HeroSection({ onSubmit, children }: HeroSectionProps) {
+export default function HeroSection({ onSubmit }: HeroSectionProps) {
   const [prompt, setPrompt] = useState('');
   const { user, loading } = useAuth();
 
@@ -22,7 +23,7 @@ export default function HeroSection({ onSubmit, children }: HeroSectionProps) {
 
   return (
     <section className="relative text-white">
-      {children}
+      <Header />
       <div className="container mx-auto px-6 py-32 text-center relative z-10">
         <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-4 font-headline">
           Just imagine your trip.
@@ -40,19 +41,23 @@ export default function HeroSection({ onSubmit, children }: HeroSectionProps) {
                 className="w-full bg-transparent px-6 py-3 text-card-foreground focus:outline-none border-none focus-visible:ring-0 text-base"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                disabled={loading}
               />
-              <Button type="submit" className="rounded-full px-8 py-3 text-base h-auto" disabled={loading}>
+              <Button type="submit" className="rounded-full px-8 py-3 text-base h-auto">
                 Plan Trip
               </Button>
             </div>
             {!loading && !user && (
-                 <p className="text-sm mt-4">
-                    For faster results,{' '}
-                    <Link href="/login" className="underline hover:text-accent">
-                        log in!
-                    </Link>
-                </p>
+                 <div className="mt-4 inline-block bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20 shadow-lg">
+                    <div className="flex items-center gap-3">
+                        <Sparkles className="h-5 w-5 text-yellow-300" />
+                        <p className="text-sm text-white/90">
+                            For faster results,{' '}
+                            <Link href="/login" className="font-bold underline hover:text-white">
+                                log in!
+                            </Link>
+                        </p>
+                    </div>
+                </div>
             )}
           </form>
         </div>
