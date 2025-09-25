@@ -17,29 +17,7 @@ export default function HeroSection({ onSubmit, children }: HeroSectionProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (user) {
-      onSubmit(prompt);
-    }
-  };
-
-  const renderButton = () => {
-    if (loading) {
-      return <Button type="button" disabled className="rounded-full px-8 py-3 text-base h-auto">Loading...</Button>;
-    }
-    if (!user) {
-      return (
-        <Link href="/login">
-          <Button type="button" className="rounded-full px-8 py-3 text-base h-auto bg-accent text-accent-foreground hover:bg-accent/90">
-            Login for Premium Generation
-          </Button>
-        </Link>
-      );
-    }
-    return (
-      <Button type="submit" className="rounded-full px-8 py-3 text-base h-auto">
-        Plan Trip
-      </Button>
-    );
+    onSubmit(prompt);
   };
 
   return (
@@ -53,17 +31,29 @@ export default function HeroSection({ onSubmit, children }: HeroSectionProps) {
           Describe your perfect vacation, and let our AI craft a personalized itinerary for you.
         </p>
         <div className="max-w-3xl mx-auto">
-          <form onSubmit={handleSubmit} className="bg-white rounded-full p-2 flex items-center shadow-lg">
-            <Input
-              type="text"
-              id="trip-prompt"
-              placeholder="e.g., 'A 5-day adventurous trip to the Swiss Alps'"
-              className="w-full bg-transparent px-6 py-3 text-card-foreground focus:outline-none border-none focus-visible:ring-0 text-base"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              disabled={!user && !loading}
-            />
-            {renderButton()}
+          <form onSubmit={handleSubmit}>
+            <div className="bg-white rounded-full p-2 flex items-center shadow-lg">
+              <Input
+                type="text"
+                id="trip-prompt"
+                placeholder="e.g., 'A 5-day adventurous trip to the Swiss Alps'"
+                className="w-full bg-transparent px-6 py-3 text-card-foreground focus:outline-none border-none focus-visible:ring-0 text-base"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                disabled={loading}
+              />
+              <Button type="submit" className="rounded-full px-8 py-3 text-base h-auto" disabled={loading}>
+                Plan Trip
+              </Button>
+            </div>
+            {!loading && !user && (
+                 <p className="text-sm mt-4">
+                    For faster results,{' '}
+                    <Link href="/login" className="underline hover:text-accent">
+                        log in!
+                    </Link>
+                </p>
+            )}
           </form>
         </div>
       </div>
