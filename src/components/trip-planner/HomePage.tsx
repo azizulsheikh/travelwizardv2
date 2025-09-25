@@ -41,7 +41,7 @@ export default function HomePage() {
     if (error || !plan) {
       toast({
         title: "Error Generating Plan",
-        description: error,
+        description: error || 'An unknown error occurred during plan generation.',
         variant: "destructive",
       });
       setShowResults(false);
