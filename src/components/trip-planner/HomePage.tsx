@@ -88,23 +88,26 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black opacity-50"></div>
       </div>
       <div className="relative z-10 flex flex-col flex-grow">
-        <Header />
-
-        {!showResults && <HeroSection onSubmit={handleInitialSubmit} />}
+        {!showResults && <HeroSection onSubmit={handleInitialSubmit}>
+          <Header />
+        </HeroSection>}
         
         {showResults && (
-          <div className="container mx-auto p-4 md:p-8 flex-grow">
-            {isLoading && !itinerary ? (
-              <LoadingDisplay />
-            ) : itinerary ? (
-              <ResultsView 
-                itinerary={itinerary}
-                isLoading={isLoading}
-                onRefine={handleRefinement}
-                conversation={conversation}
-              />
-            ) : null}
-          </div>
+          <>
+            <Header />
+            <div className="container mx-auto p-4 md:p-8 flex-grow">
+              {isLoading && !itinerary ? (
+                <LoadingDisplay />
+              ) : itinerary ? (
+                <ResultsView 
+                  itinerary={itinerary}
+                  isLoading={isLoading}
+                  onRefine={handleRefinement}
+                  conversation={conversation}
+                />
+              ) : null}
+            </div>
+          </>
         )}
       </div>
     </div>

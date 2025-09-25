@@ -8,9 +8,10 @@ import Link from 'next/link';
 
 interface HeroSectionProps {
   onSubmit: (prompt: string) => void;
+  children: React.ReactNode;
 }
 
-export default function HeroSection({ onSubmit }: HeroSectionProps) {
+export default function HeroSection({ onSubmit, children }: HeroSectionProps) {
   const [prompt, setPrompt] = useState('');
   const { user, loading } = useAuth();
 
@@ -43,6 +44,7 @@ export default function HeroSection({ onSubmit }: HeroSectionProps) {
 
   return (
     <section className="relative text-white">
+      {children}
       <div className="container mx-auto px-6 py-32 text-center relative z-10">
         <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-4 font-headline">
           Just imagine your trip.
