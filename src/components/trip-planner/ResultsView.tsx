@@ -4,6 +4,7 @@ import type { Itinerary } from '@/lib/types';
 import ItineraryDisplay from './ItineraryDisplay';
 import ItinerarySkeleton from './ItinerarySkeleton';
 import ChatSidebar, { type Message } from './ChatSidebar';
+import Header from './Header';
 
 interface ResultsViewProps {
   itinerary: Itinerary | null;
@@ -20,13 +21,16 @@ export default function ResultsView({
 }: ResultsViewProps) {
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-      <div className="lg:col-span-2 relative p-6 rounded-2xl shadow-lg bg-black/30 backdrop-blur-md">
-        {isLoading && !itinerary ? <ItinerarySkeleton isInitial={false} /> : (itinerary ? <ItineraryDisplay itinerary={itinerary} /> : <ItinerarySkeleton isInitial={true} />)}
+    <>
+      <Header />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start mt-8">
+        <div className="lg:col-span-2 relative p-6 rounded-2xl shadow-lg bg-black/30 backdrop-blur-md">
+          {isLoading && !itinerary ? <ItinerarySkeleton isInitial={false} /> : (itinerary ? <ItineraryDisplay itinerary={itinerary} /> : <ItinerarySkeleton isInitial={true} />)}
+        </div>
+        <div className="lg:col-span-1">
+           <ChatSidebar messages={conversation} onSendMessage={onRefine} isLoading={isLoading} />
+        </div>
       </div>
-      <div className="lg:col-span-1">
-         <ChatSidebar messages={conversation} onSendMessage={onRefine} isLoading={isLoading} />
-      </div>
-    </div>
+    </>
   );
 }

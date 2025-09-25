@@ -7,7 +7,6 @@ import { useToast } from '@/hooks/use-toast';
 import HeroSection from './HeroSection';
 import ResultsView from './ResultsView';
 import Image from 'next/image';
-import Header from './Header';
 import LoadingDisplay from './LoadingDisplay';
 import { Message } from './ChatSidebar';
 
@@ -88,26 +87,21 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black opacity-50"></div>
       </div>
       <div className="relative z-10 flex flex-col flex-grow">
-        {!showResults && <HeroSection onSubmit={handleInitialSubmit}>
-          <Header />
-        </HeroSection>}
+        {!showResults && <HeroSection onSubmit={handleInitialSubmit} />}
         
         {showResults && (
-          <>
-            <Header />
-            <div className="container mx-auto p-4 md:p-8 flex-grow">
-              {isLoading && !itinerary ? (
-                <LoadingDisplay />
-              ) : itinerary ? (
-                <ResultsView 
-                  itinerary={itinerary}
-                  isLoading={isLoading}
-                  onRefine={handleRefinement}
-                  conversation={conversation}
-                />
-              ) : null}
-            </div>
-          </>
+          <div className="container mx-auto p-4 md:p-8 flex-grow">
+            {isLoading && !itinerary ? (
+              <LoadingDisplay />
+            ) : itinerary ? (
+              <ResultsView 
+                itinerary={itinerary}
+                isLoading={isLoading}
+                onRefine={handleRefinement}
+                conversation={conversation}
+              />
+            ) : null}
+          </div>
         )}
       </div>
     </div>
