@@ -91,7 +91,7 @@ export default function HomePage() {
       </div>
       <div className="relative z-10 flex flex-col flex-grow">
         <Header />
-        {!showResults && <HeroSection onSubmit={handleInitialSubmit} loading={loading} user={user} />}
+        {!showResults && <HeroSection onSubmit={handleInitialSubmit} user={user} loading={loading} />}
         
         {showResults && (
           <div className="container mx-auto p-4 md:p-8 flex-grow">
